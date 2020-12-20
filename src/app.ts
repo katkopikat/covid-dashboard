@@ -1,5 +1,5 @@
 import Dispatch from './dispatch';
-import './assets/styles/style.css';
+import './assets/styles/styles.scss';
 import './assets/styles/fontawesome/css/all.css';
 import './eventlisteners'
 
