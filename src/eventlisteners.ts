@@ -8,7 +8,7 @@ const chart = document.querySelector('.chart');
 const piechart = document.querySelector('.piechart');
 const btnsFullScreen = document.querySelectorAll('.fa-expand');
 const contentBlocks = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
-let openFullScreen = false;
+let openFullScreen: boolean = false;
 
 btnSettingsDashboard.addEventListener('click', () => {
   settingsDashboard.classList.remove('hide');
