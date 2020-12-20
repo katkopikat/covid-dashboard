@@ -1,3 +1,6 @@
+@import '../../../node_modules/leaflet/dist/leaflet.css';
+@import './blocks/map.scss';
+
 body {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -16,4 +19,27 @@ section {
   justify-content: center;
 
   background-color: #ccc;
+}
+
+#map {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.visually-hidden,
+.visually-hidden:not(:focus):not(:active),
+input[type='checkbox'].visually-hidden,
+input[type='radio'].visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  white-space: nowrap;
 }
