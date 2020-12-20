@@ -1,15 +1,16 @@
-const btnSettingsDashboard = document.querySelector('.btn_settings--dashboard');
-const settingsDashboard = document.querySelector('.settings__block');
-const okBtnDashboard = document.querySelector('.btn__settings');
-const countries = document.querySelector('.countries');
-const map = document.querySelector('.map');
-const dashboard = document.querySelector('.dashboard');
-const chart = document.querySelector('.chart');
-const piechart = document.querySelector('.piechart');
-const btnsFullScreen = document.querySelectorAll('.fa-expand');
-const contentBlocks = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
-let openFullScreen = false;
+const btnSettingsDashboard: HTMLElement = document.querySelector('.btn_settings--dashboard');
+const settingsDashboard: HTMLElement = document.querySelector('.settings__block');
+const okBtnDashboard: HTMLElement = document.querySelector('.btn__settings');
+const countries: HTMLElement = document.querySelector('.countries');
+const map: HTMLElement = document.querySelector('.map');
+const dashboard: HTMLElement = document.querySelector('.dashboard');
+const chart: HTMLElement = document.querySelector('.chart');
+const piechart: HTMLElement = document.querySelector('.piechart');
+const btnsFullScreen: NodeListOf<Element> = document.querySelectorAll('.fa-expand');
+const contentBlocks: Array<string> = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
+let openFullScreen: boolean = false;
 
+(function(): void {
 btnSettingsDashboard.addEventListener('click', () => {
   settingsDashboard.classList.remove('hide');
 });
@@ -18,52 +19,6 @@ okBtnDashboard.addEventListener('click', () => {
   // ПЕРЕРИСОВКА ВСЕГО
   settingsDashboard.classList.add('hide');
 });
-
-function countriesFullScreen() {
-  countries.classList.remove('hide');
-  countries.classList.add('fullscreen');
-}
-
-function mapFullScreen() {
-  map.classList.remove('hide');
-  map.classList.add('fullscreen');
-}
-
-function dashboardFullScreen() {
-  dashboard.classList.remove('hide');
-  dashboard.classList.add('fullscreen');
-  document.querySelectorAll('.heading__section').forEach((el) => {
-    el.classList.add('heading__section--full');
-  });
-  document.querySelectorAll('.dashboard__number').forEach((el) => {
-    el.classList.add('dashboard__number--full');
-  });
-}
-
-function chartFullScreen() {
-  chart.classList.remove('hide');
-  chart.classList.add('fullscreen');
-}
-
-function piechartFullScreen() {
-  piechart.classList.remove('hide');
-  piechart.classList.add('fullscreen');
-}
-
-function hideContentBlocks() {
-  contentBlocks.forEach((it) => {
-    document.querySelector(`.${it}`).classList.add('hide');
-  });
-}
-
-function showContentBlocks() {
-  contentBlocks.forEach((it) => {
-    console.log(document.querySelector(`.${it}`));
-    document.querySelector(`.${it}`).classList.remove('hide');
-  });
-
-  document.querySelector('.fullscreen').classList.remove('fullscreen');
-}
 
 btnsFullScreen.forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -91,3 +46,51 @@ btnsFullScreen.forEach((btn) => {
     }
   });
 });
+}());
+
+function countriesFullScreen(): void {
+  countries.classList.remove('hide');
+  countries.classList.add('fullscreen');
+}
+
+function mapFullScreen(): void {
+  map.classList.remove('hide');
+  map.classList.add('fullscreen');
+}
+
+function dashboardFullScreen(): void {
+  dashboard.classList.remove('hide');
+  dashboard.classList.add('fullscreen');
+  document.querySelectorAll('.heading__section').forEach((el) => {
+    el.classList.add('heading__section--full');
+  });
+  document.querySelectorAll('.dashboard__number').forEach((el) => {
+    el.classList.add('dashboard__number--full');
+  });
+}
+
+function chartFullScreen(): void {
+  chart.classList.remove('hide');
+  chart.classList.add('fullscreen');
+}
+
+function piechartFullScreen(): void {
+  piechart.classList.remove('hide');
+  piechart.classList.add('fullscreen');
+}
+
+function hideContentBlocks(): void {
+  contentBlocks.forEach((it) => {
+    document.querySelector(`.${it}`).classList.add('hide');
+  });
+}
+
+function showContentBlocks(): void {
+  contentBlocks.forEach((it) => {
+    document.querySelector(`.${it}`).classList.remove('hide');
+  });
+
+  document.querySelector('.fullscreen').classList.remove('fullscreen');
+}
+
+
