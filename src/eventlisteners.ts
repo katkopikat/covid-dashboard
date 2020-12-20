@@ -10,44 +10,6 @@ const btnsFullScreen: NodeListOf<Element> = document.querySelectorAll('.fa-expan
 const contentBlocks: Array<string> = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
 let openFullScreen: boolean = false;
 
-(function(): void {
-btnSettingsDashboard.addEventListener('click', () => {
-  settingsDashboard.classList.remove('hide');
-});
-
-okBtnDashboard.addEventListener('click', () => {
-  // ПЕРЕРИСОВКА ВСЕГО
-  settingsDashboard.classList.add('hide');
-});
-
-btnsFullScreen.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    if (!openFullScreen) {
-      openFullScreen = true;
-      hideContentBlocks();
-      if (btn.classList.contains('btn_fullscreen--countries')) {
-        countriesFullScreen();
-      }
-      if (btn.classList.contains('btn_fullscreen--dashboard')) {
-        dashboardFullScreen();
-      }
-      if (btn.classList.contains('btn_fullscreen--map')) {
-        mapFullScreen();
-      }
-      if (btn.classList.contains('btn_fullscreen--chart')) {
-        chartFullScreen();
-      }
-      if (btn.classList.contains('btn_fullscreen--piechart')) {
-        piechartFullScreen();
-      }
-    } else {
-      openFullScreen = false;
-      showContentBlocks();
-    }
-  });
-});
-}());
-
 function countriesFullScreen(): void {
   countries.classList.remove('hide');
   countries.classList.add('fullscreen');
@@ -93,4 +55,40 @@ function showContentBlocks(): void {
   document.querySelector('.fullscreen').classList.remove('fullscreen');
 }
 
+(function (): void {
+  btnSettingsDashboard.addEventListener('click', () => {
+    settingsDashboard.classList.remove('hide');
+  });
 
+  okBtnDashboard.addEventListener('click', () => {
+    // ПЕРЕРИСОВКА ВСЕГО
+    settingsDashboard.classList.add('hide');
+  });
+
+  btnsFullScreen.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!openFullScreen) {
+        openFullScreen = true;
+        hideContentBlocks();
+        if (btn.classList.contains('btn_fullscreen--countries')) {
+          countriesFullScreen();
+        }
+        if (btn.classList.contains('btn_fullscreen--dashboard')) {
+          dashboardFullScreen();
+        }
+        if (btn.classList.contains('btn_fullscreen--map')) {
+          mapFullScreen();
+        }
+        if (btn.classList.contains('btn_fullscreen--chart')) {
+          chartFullScreen();
+        }
+        if (btn.classList.contains('btn_fullscreen--piechart')) {
+          piechartFullScreen();
+        }
+      } else {
+        openFullScreen = false;
+        showContentBlocks();
+      }
+    });
+  });
+}());
