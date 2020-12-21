@@ -1,3 +1,8 @@
+@mixin mapElement($position: absolute) {
+  position: $position;
+  z-index: 1000;
+}
+
 .icon-marker {
   display: flex;
   position: relative;
@@ -29,60 +34,9 @@
   background-color: $recovered-color;
 }
 
-.icon-marker-tooltip {
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  width: 16em;
-  font-size: 1.4em;
-  padding: 1em;
-  background-color: gray;
-  border-radius: 0.4em;
-  margin-bottom: 1em;
-  box-shadow: 0 3px 5px rgba(black, 0.9);
-
-  &:before {
-    display: block;
-    position: absolute;
-    bottom: -0.6em;
-    left: 50%;
-    content: '';
-    width: 1.4em;
-    height: 1.4em;
-    background-color: gray;
-    transform: rotate(45deg);
-    margin-left: -0.7em;
-  }
-
-  h2 {
-    font-size: 1.5em;
-    line-height: 1.2;
-    margin-bottom: 0.1em;
-    margin-top: 0;
-  }
-
-  h3 {
-    font-size: 1.2em;
-    margin: 0.1em 0;
-    font-weight: normal;
-    color: gray;
-  }
-
-  ul,
-  p {
-    font-weight: normal;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0.6em 0 0;
-  }
-}
-
 #tooltip {
-  position: fixed;
-  z-index: 1000;
+  @include mapElement;
+
   top: 50px;
   right: 10px;
   width: 200px;
@@ -98,10 +52,10 @@
 }
 
 .map-controls {
-  position: fixed;
+  @include mapElement;
+
   right: 10px;
   top: 10px;
-  z-index: 1000;
   display: flex;
 }
 
@@ -128,40 +82,34 @@
 }
 
 .map-legend {
-  position: fixed;
-  z-index: 1000;
+  @include mapElement;
+
   top: 50px;
-  // right: 10px;
   right: -100%;
   width: 200px;
   min-height: 100px;
-  // display: none;
   border-radius: 5px;
   background-color: #fff;
   transition: all 300ms;
 }
 
 .show-legend {
-  // display: block !important;
   right: 10px;
 }
 
 .map-settings {
-  position: fixed;
-  z-index: 1000;
+  @include mapElement;
+
   top: 50px;
-  // right: 10px;
   right: -100%;
   width: 200px;
   min-height: 100px;
-  // display: none;
   border-radius: 5px;
   background-color: #fff;
   transition: all 300ms;
 }
 
 .show-map-settings {
-  // display: block !important;
   right: 10px;
 }
 
@@ -188,8 +136,6 @@
 
 .legend-marker {
   display: flex;
-  // position: absolute;
-  // left: -4em;
   justify-content: center;
   align-items: center;
   color: white;
@@ -229,4 +175,19 @@ input[type='radio'].visually-hidden {
   clip: rect(0 0 0 0);
   clip-path: inset(100%);
   white-space: nowrap;
+}
+
+#map {
+  & .settings__icons {
+    @include mapElement(relative);
+  }
+
+  & .settings__map {
+    // @include mapElement;
+    z-index: 1000;
+  }
+}
+
+.leaflet-control-attribution.leaflet-control {
+  display: none;
 }

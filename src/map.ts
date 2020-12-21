@@ -58,10 +58,18 @@ export default class Map implements IUpdate {
   private dataType = DataKey;
   private currentDataType: DataKey = DataKey.cases;
   private mapService: MapService;
+  private dataSettings: Params;
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
     this.root = document.querySelector('.map');
+    this.dataSettings = {
+      country: 'Global',
+      dataType: DataTypes.CASES,
+      lastDay: false,
+      per100k: false,
+    };
+
     this.mapService = new MapService();
     this.mapService.getMapData()
       .then((data: ICovidData[]) => {
@@ -71,21 +79,26 @@ export default class Map implements IUpdate {
   }
 
   update(params: Params): void {
-    console.log(params, this);
+    console.log('on update map', params);
+    this.dataSettings = { ...params };
+    this.changeHeatMapComponents();
+    // console.log(params, this);
   }
 
-  example() {
-    this.raiseEvent(Events.UPDATE, { country: 'Global', lastDay: true, per100K: false });
+  private postSettings(settings: Params) {
+    this.raiseEvent(Events.UPDATE, settings);
   }
 
   public init(): void {
     if (this.data) {
-      this.render(this.currentDataType);
+      this.render();
     }
   }
 
-  private render(dataKey: DataKey): void {
-    const { data, scale } = getDataForHeatMap(this.data, dataKey);
+  private render(): void {
+    const dataKey: string = this.getDataKey();
+    const { per100k } = this.dataSettings;
+    const { data, scale } = getDataForHeatMap(this.data, dataKey, per100k);
     this.scale = scale;
     const markersGeoData = getGeoJsonData(data);
     this.renderMap(this.mapOptions);
@@ -96,10 +109,35 @@ export default class Map implements IUpdate {
     this.addTileLayer();
     this.addCountriesLayer();
     this.addMarkersLayer(markersGeoData);
+    this.addSettingsListener();
   }
 
-  private changeHeatMapComponents(dataKey: DataKey) {
-    const { data, scale } = getDataForHeatMap(this.data, dataKey);
+  private getDataKey(): string {
+    const { dataType } = this.dataSettings;
+    const { lastDay } = this.dataSettings;
+    const typeAdapter = {
+      [DataTypes.CASES]: DataKey.cases,
+      [DataTypes.DEATH]: DataKey.deaths,
+      [DataTypes.RECOVERED]: DataKey.recovered,
+    };
+    const lastDayAdapter = {
+      [DataKey.cases]: DataKey.todayCases,
+      [DataKey.deaths]: DataKey.todayDeaths,
+      [DataKey.recovered]: DataKey.todayRecovered,
+    };
+
+    let type: string = typeAdapter[dataType];
+
+    if (lastDay) {
+      type = lastDayAdapter[type];
+    }
+    return type;
+  }
+
+  private changeHeatMapComponents() {
+    const dataKey: string = this.getDataKey();
+    const { per100k } = this.dataSettings;
+    const { data, scale } = getDataForHeatMap(this.data, dataKey, per100k);
     this.scale = scale;
     const markersGeoData = getGeoJsonData(data);
     this.mapElement.removeLayer(this.markersLayers);
@@ -108,6 +146,41 @@ export default class Map implements IUpdate {
 
   private renderMap(mapOptions: IMapOptions): void {
     this.mapElement = new Leaflet.Map('map', mapOptions);
+  }
+
+  private addSettingsListener(): void {
+    const periodController: HTMLInputElement = this.root.querySelector('[name="period"]');
+    periodController.addEventListener('change', (e: InputEvent) => {
+      // period controller. Default is false -> period = all time | true -> period = one day
+      const newValue: boolean = (e.target as HTMLInputElement).checked;
+      const newSettings: Params = { ...this.dataSettings, per100k: newValue };
+      this.postSettings(newSettings);
+    });
+
+    const absoluteController: HTMLInputElement = this.root.querySelector('[name="numeric"]');
+    absoluteController.addEventListener('change', (e: InputEvent) => {
+      // absolute controller. Default is false -> numeric = absolute | true -> relative
+      const newValue: boolean = (e.target as HTMLInputElement).checked;
+      const newSettings: Params = { ...this.dataSettings, lastDay: newValue };
+      this.postSettings(newSettings);
+    });
+
+    const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll('[name="map_radio"]');
+
+    Array.from(dataTypeControllers).forEach((radioController: HTMLInputElement) => {
+      // default cases; other - recovered | deaths
+      radioController.addEventListener('change', (e: InputEvent) => {
+        const newValue: string = (e.target as HTMLInputElement).value;
+        const adapter = {
+          cases: DataTypes.CASES,
+          deaths: DataTypes.DEATH,
+          recovered: DataTypes.RECOVERED,
+        };
+
+        const newSettings: Params = { ...this.dataSettings, lastDay: adapter[newValue] };
+        this.postSettings(newSettings);
+      });
+    });
   }
 
   private addTileLayer(): void {
@@ -172,7 +245,7 @@ export default class Map implements IUpdate {
     this.showLegendButton.addEventListener('click', this.showLegend.bind(this));
 
     this.showLegendButton = mapControls.querySelector('[data-show-settings]');
-    this.showLegendButton.addEventListener('click', this.showSettings.bind(this));
+    // this.showLegendButton.addEventListener('click', this.showSettings.bind(this));
     (this.root as HTMLElement).prepend(mapControls);
   }
 
@@ -206,29 +279,29 @@ export default class Map implements IUpdate {
     this.makeMapEnable();
   }
 
-  private showSettings(): void {
-    this.settingsElement.classList.toggle('show-map-settings');
-    if (this.settingsElement.classList.contains('show-map-settings')) {
-      this.settingsElement.innerHTML = getSettingsTemplate();
+  // private showSettings(): void {
+  //   this.settingsElement.classList.toggle('show-map-settings');
+  //   if (this.settingsElement.classList.contains('show-map-settings')) {
+  //     this.settingsElement.innerHTML = getSettingsTemplate();
 
-      document.getElementById('case').addEventListener('click', () => {
-        this.currentDataType = this.dataType.cases;
-        this.changeHeatMapComponents(this.currentDataType);
-      });
-      document.getElementById('recovered').addEventListener('click', () => {
-        this.currentDataType = this.dataType.recovered;
-        this.changeHeatMapComponents(this.currentDataType);
-      });
-      document.getElementById('deaths').addEventListener('click', () => {
-        this.currentDataType = this.dataType.deaths;
-        this.changeHeatMapComponents(this.currentDataType);
-      });
-      this.legendElement.classList.remove('show-legend');
-      this.makeMapDisabled();
-      return;
-    }
-    this.makeMapEnable();
-  }
+  //     document.getElementById('case').addEventListener('click', () => {
+  //       this.currentDataType = this.dataType.cases;
+  //       this.changeHeatMapComponents(this.currentDataType);
+  //     });
+  //     document.getElementById('recovered').addEventListener('click', () => {
+  //       this.currentDataType = this.dataType.recovered;
+  //       this.changeHeatMapComponents(this.currentDataType);
+  //     });
+  //     document.getElementById('deaths').addEventListener('click', () => {
+  //       this.currentDataType = this.dataType.deaths;
+  //       this.changeHeatMapComponents(this.currentDataType);
+  //     });
+  //     this.legendElement.classList.remove('show-legend');
+  //     this.makeMapDisabled();
+  //     return;
+  //   }
+  //   this.makeMapEnable();
+  // }
 
   private getLegendTemplate() {
     const elements: string = this.scale
@@ -259,10 +332,6 @@ export default class Map implements IUpdate {
       .join('');
     return `<h3 class="legend-title">Legend</h3><ul class="legend-list">${elements}</ul>`;
   }
-
-  // private changeDataType(value: string): void {
-  //   console.log(value);
-  // }
 
   private makeMapDisabled() {
     this.mapElement.doubleClickZoom.disable();

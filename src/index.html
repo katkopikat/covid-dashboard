@@ -85,7 +85,7 @@
           </li>
         </ul>
       </section>
-      <section class="map content__block">
+      <section id="map" class="map content__block">
         <div class="settings__icons">
           <i class="btn_settings--map fas fa-sliders-h"></i>
           <i class="btn_fullscreen--map fas fa-expand"></i>
@@ -111,17 +111,17 @@
           <div class="settings__radio">
             <h4 class="settings__subheading">Data: </h4>
             <label for="map_cases">
-              <input type="radio" id="map_cases" name="map_radio" checked>
+              <input type="radio" id="map_cases" name="map_radio" value="cases" checked>
               <span class="rdo"></span>
               <span>cases</span>
             </label>
             <label for="map_recovered">
-              <input type="radio" id="map_recovered" name="map_radio">
+              <input type="radio" id="map_recovered" name="map_radio" value="recovered">
               <span class="rdo"></span>
               <span>recovered</span>
             </label>
               <label for="map_deaths">
-              <input type="radio" id="map_deaths" name="map_radio">
+              <input type="radio" id="map_deaths" name="map_radio" value="deaths">
               <span class="rdo"></span>
               <span>deaths</span>
             </label>
