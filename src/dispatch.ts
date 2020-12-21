@@ -9,6 +9,7 @@ import Dashboard from './dashboard';
 
 export interface Params {
   country?: string,
+  dataType?: DataTypes,
   lastDay?: boolean,
   per100k?: boolean,
 }
@@ -17,6 +18,16 @@ export type EventFunc = (message: Events, params: Params) => void;
 
 export enum Events {
   UPDATE,
+}
+
+export enum DataTypes {
+  CASES,
+  RECOVERED,
+  DEATH,
+}
+
+export interface IUpdate {
+  update(params: Params): void;
 }
 
 export default class Dispatch {

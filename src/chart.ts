@@ -1,8 +1,8 @@
-// eslint-disable-next-line import/no-cycle
-import { EventFunc, Params, Events } from './dispatch';
+// eslint-disable-next-line import/no-cycle,object-curly-newline
+import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 
-export default class Chart {
-  private root: HTMLElement;
+export default class Chart implements IUpdate {
+  private readonly root: HTMLElement;
   private readonly raiseEvent;
 
   constructor(eventFunction: EventFunc) {

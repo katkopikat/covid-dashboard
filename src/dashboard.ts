@@ -1,8 +1,8 @@
-// eslint-disable-next-line import/no-cycle
-import { EventFunc, Params, Events } from './dispatch';
+// eslint-disable-next-line import/no-cycle,object-curly-newline
+import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 
-export default class Dashboard {
-  private root: HTMLElement;
+export default class Dashboard implements IUpdate {
+  private readonly root: HTMLElement;
   private readonly raiseEvent;
 
   constructor(eventFunction: EventFunc) {
@@ -11,7 +11,7 @@ export default class Dashboard {
     // this.root.innerHTML = 'DASHBOARD';
   }
 
-  update(params: Params) {
+  update(params: Params): void {
     console.log(params, this);
   }
 
