@@ -37,28 +37,11 @@ export default class Dispatch {
   private dashboard: Dashboard;
 
   constructor() {
-<<<<<<< HEAD
-    fetch(endpoints.countries, {
-      method: 'GET',
-      // headers: {
-      //   'X-Access-Token': '5cf9dfd5-3449-485e-b5ae-70a60e997864',
-      // },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        this.chart = new Chart();
-        this.map = new Map(data);
-        this.map.init();
-        this.countries = new Countries();
-        this.dashboard = new Dashboard();
-      });
-=======
     const eventFunction: EventFunc = this.processEvent;
     this.chart = new Chart(eventFunction);
     this.map = new Map(eventFunction);
     this.countries = new Countries(eventFunction);
     this.dashboard = new Dashboard(eventFunction);
->>>>>>> develop
   }
 
   processEvent = (message: Events, params: Params) => {
