@@ -1,8 +1,21 @@
-export default class Dashboard {
-  private root: HTMLElement;
+// eslint-disable-next-line import/no-cycle,object-curly-newline
+import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 
-  constructor() {
+export default class Dashboard implements IUpdate {
+  private readonly root: HTMLElement;
+  private readonly raiseEvent;
+
+  constructor(eventFunction: EventFunc) {
+    this.raiseEvent = eventFunction;
     this.root = document.querySelector('#dashboard');
-    this.root.innerHTML = 'DASHBOARD';
+    // this.root.innerHTML = 'DASHBOARD';
+  }
+
+  update(params: Params): void {
+    console.log(params, this);
+  }
+
+  example() {
+    this.raiseEvent(Events.UPDATE, { country: 'Global', lastDay: true, per100K: false });
   }
 }
