@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-cycle,object-curly-newline
+import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 import Leaflet from 'leaflet';
 import mapConfig from './common/config/map.config';
 import {
@@ -23,8 +25,9 @@ import {
   DataKey,
 } from './common/models/common.model';
 
-export default class Map {
-  private root: HTMLElement;
+export default class Map implements IUpdate {
+  private readonly root: HTMLElement;
+  private readonly raiseEvent;
   private legendElement: HTMLElement;
   private settingsElement: HTMLElement;
   private tooltipElement: HTMLElement;
@@ -54,9 +57,17 @@ export default class Map {
   private dataType = DataKey;
   private currentDataType: DataKey = DataKey.cases;
 
-  constructor(covidData: ICovidData[]) {
-    this.data = covidData;
+  constructor(eventFunction: EventFunc) {
+    this.raiseEvent = eventFunction;
     this.root = document.querySelector('#map');
+  }
+  
+  update(params: Params): void {
+    console.log(params, this);
+  }
+
+  example() {
+    this.raiseEvent(Events.UPDATE, { country: 'Global', lastDay: true, per100K: false });
   }
 
   public init(): void {
