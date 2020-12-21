@@ -1,6 +1,10 @@
 import Leaflet from 'leaflet';
-import IsoToLatLong from 'country-iso-to-coordinates';
-import { Common, ICovidData, ICovidDataWeight, IFeature, IMapLegendItem } from '../models/map.model';
+import {
+  ICovidData,
+  ICovidDataWeight,
+  IMapLegendItem,
+} from '../models/map.model';
+import { DataKey } from '../models/common.model';
 
 const getCountryStyle = () => ({
   fillColor: '#E3E3E3',
@@ -26,15 +30,21 @@ function onCountryHighLight(e) {
 }
 
 const getMarkerSize = (numb: number, scale: IMapLegendItem[]): number => {
-  const element: IMapLegendItem = scale
-    .find((item: IMapLegendItem) => numb >= item.range.min && numb <= item.range.max);
+  const element: IMapLegendItem = scale.find(
+    (item: IMapLegendItem) => numb >= item.range.min && numb <= item.range.max,
+  );
   if (element) {
     return element.markerWeight;
   }
   return 1;
 };
 
-const generateScale = (value: number, currentKey: string, maxItemsCount = 9, startDiv = 2): IMapLegendItem[] => {
+const generateScale = (
+  value: number,
+  currentKey: string,
+  maxItemsCount = 9,
+  startDiv = 2,
+): IMapLegendItem[] => {
   let scale: IMapLegendItem[] = [];
   let count = 0;
 
@@ -63,22 +73,31 @@ const generateScale = (value: number, currentKey: string, maxItemsCount = 9, sta
 
 const getScaleWithWeight = (scale: IMapLegendItem[]) => {
   const scaleWithWeight = [...scale.slice().reverse()];
-  return scaleWithWeight
-    .map((item: IMapLegendItem, index: number) => ({ ...item, markerWeight: index + 1 }));
+  return scaleWithWeight.map((item: IMapLegendItem, index: number) => ({
+    ...item,
+    markerWeight: index + 1,
+  }));
 };
 
-const convertDataToRelative = (
-  value: number, population: number,
-) => Math.round(value / (population / 100000));
+const convertDataToRelative = (value: number, population: number) => {
+  const POPULATION_STEP = 100000;
+  return Math.round(value / (population / POPULATION_STEP));
+};
 
-const getDataForHeatMap = (countries: ICovidData[], currentKey = 'cases', relative = true): { data: ICovidDataWeight[], scale: IMapLegendItem[] } => {
+const getDataForHeatMap = (
+  countries: ICovidData[],
+  currentKey = 'cases',
+  relative = false,
+): { data: ICovidDataWeight[]; scale: IMapLegendItem[] } => {
   let copyData = [...countries];
 
   if (relative) {
-    copyData = copyData.filter((item: ICovidData) => item.population).map((item: ICovidData) => ({
-      ...item,
-      [currentKey]: convertDataToRelative(item[currentKey], item.population),
-    }));
+    copyData = copyData
+      .filter((item: ICovidData) => item.population)
+      .map((item: ICovidData) => ({
+        ...item,
+        [currentKey]: convertDataToRelative(item[currentKey], item.population),
+      }));
   }
   copyData.sort((a, b) => {
     if (a[currentKey] > b[currentKey]) {
@@ -90,17 +109,14 @@ const getDataForHeatMap = (countries: ICovidData[], currentKey = 'cases', relati
     return 0;
   });
 
-  console.log(copyData);
-
   const scale = generateScale(copyData.slice(-1)[0][currentKey], currentKey);
   const scaleWithWeight = getScaleWithWeight(scale);
 
-  console.log(scaleWithWeight)
-
-  const data = copyData
-    .map((item: ICovidData) => (
-      { ...item, markerIndex: getMarkerSize(item[currentKey], scaleWithWeight), currentKey }
-    ));
+  const data = copyData.map((item: ICovidData) => ({
+    ...item,
+    markerIndex: getMarkerSize(item[currentKey], scaleWithWeight),
+    currentKey,
+  }));
   return {
     data,
     scale: scaleWithWeight,
@@ -109,27 +125,11 @@ const getDataForHeatMap = (countries: ICovidData[], currentKey = 'cases', relati
 
 const pointToLayer = (feature: { [k: string]: any }, latlng: number[]) => {
   const MARKER_SIZE_STEP = 0.3;
-  const country = feature.properties.Country;
-  const totalConfirmed = feature.properties.TotalConfirmed;
-  const totalDeaths = feature.properties.TotalDeaths;
-  const totalRecovered = feature.properties.TotalRecovered;
-  const date = feature.properties.Date;
   const { markerIndex, currentKey } = feature.properties;
   const width = MARKER_SIZE_STEP * markerIndex;
   const height = MARKER_SIZE_STEP * markerIndex;
-  // width: 3.6em;
-  // height: 3.6em;
   const html = `
     <span class="icon-marker icon-marker--${currentKey}" style="width: ${width}em; height: ${height}em"></span>
-    <span class="icon-marker-tooltip">
-      <h2>${country}</h2>
-      <ul>
-        <li><strong>Confirmed:</strong> ${totalConfirmed}</li>
-        <li><strong>Deaths:</strong> ${totalDeaths}</li>
-        <li><strong>Recovered:</strong> ${totalRecovered}</li>
-        <li><strong>Last Update:</strong> ${new Date(date).toLocaleDateString()}</li>
-      </ul>
-    </span>
   `;
 
   return Leaflet.marker(latlng, {
@@ -142,32 +142,27 @@ const pointToLayer = (feature: { [k: string]: any }, latlng: number[]) => {
 };
 
 const getGeoJsonData = (data: ICovidData[]): { [k: string]: any } => {
-  // getDataForHeatMap(Countries);
   const geoJson = {
     type: 'FeatureCollection',
-    features: data.map((country: ICovidData) => {
-      // const { countryInfo = {} } = country;
-      // debugger
-      // const { CountryCode } = country;
-      // conso
-      // const [lat, lng] = (IsoToLatLong[CountryCode] || { coordinate: [] }).coordinate;
-      const { lat, long } = country.countryInfo;
-      // console.log(IsoToLatLong[CountryCode])
-      if (!lat || !long) {
-        return null;
-      }
+    features: data
+      .map((country: ICovidData) => {
+        const { lat, long } = country.countryInfo;
+        if (!lat || !long) {
+          return null;
+        }
 
-      return {
-        type: 'Feature',
-        properties: {
-          ...country,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [long, lat],
-        },
-      };
-    }).filter((item) => item),
+        return {
+          type: 'Feature',
+          properties: {
+            ...country,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [long, lat],
+          },
+        };
+      })
+      .filter((item) => item),
   };
   return geoJson;
 };
@@ -185,4 +180,56 @@ const getMapControlsTemplate = () => `
   <button class="map-controls__button" data-show-legend>L</button>
   <button class="map-controls__button" data-show-settings>S</button>`;
 
-export { getCountryStyle, getGeoJsonData, pointToLayer, onCountryHighLight, getMapControlsTemplate, getDataForHeatMap, roundToPowerOfTen };
+const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: DataKey): string => {
+  let template = `
+      <div>
+        <h3>${(item && item.country) || countryName}</h3>
+      </div>`;
+
+  if (item) {
+    template = `
+        <div>
+          <h3>${item.country}</h3>
+          <img class="flag" src="${item.countryInfo.flag}">
+          <ul>
+            <li>Total Confirmed: ${item.cases}</li>
+            <li>Total Deaths: ${item.deaths}</li>
+            <li>Total Recovered: ${item.recovered}</li>
+            <li>${currentKey}: ${item[currentKey]}</li>
+          </ul>
+        </div>`;
+  } else if (!item) {
+    template = `
+        <div>
+          <h3>${countryName}</h3>
+          <ul>
+            <li>Total Confirmed: N/A</li>
+            <li>Total Deaths: N/A</li>
+            <li>Total Recovered: N/A</li>
+          </ul>
+        </div>`;
+  }
+  return template;
+};
+
+const getSettingsTemplate = () => {
+  const form = `
+  <div id="settings">
+    <button id="case">case</button><br/>
+    <button id="deaths">deaths</button><br/>
+    <button id="recovered">recovered</button><br/>
+  </div>`;
+  return `<h3>Settings</h3>${form}`;
+};
+
+export {
+  getCountryStyle,
+  getGeoJsonData,
+  pointToLayer,
+  onCountryHighLight,
+  getMapControlsTemplate,
+  getDataForHeatMap,
+  roundToPowerOfTen,
+  getTooltipTemplate,
+  getSettingsTemplate,
+};

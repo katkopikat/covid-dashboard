@@ -40,7 +40,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "country-iso-to-coordinates": "^1.0.2",
     "country-list-js": "^3.1.7",
     "leaflet": "^1.7.1",
     "normalize.css": "^8.0.1"

@@ -1,14 +1,33 @@
 import Leaflet from 'leaflet';
 import mapConfig from './common/config/map.config';
-import { Common, ICovidData, IFeature, IMapLegendItem, IMapOptions } from './common/models/map.model';
+import {
+  Common,
+  ICovidData,
+  IFeature,
+  IMapLegendItem,
+  IMapOptions,
+} from './common/models/map.model';
 import geoData from './common/data/countries.geo.json';
-import { getCountryStyle, getDataForHeatMap, getGeoJsonData, getMapControlsTemplate, onCountryHighLight, pointToLayer, roundToPowerOfTen } from './common/helpers/map.helpers';
-import { DataKey, IDispatchArgument, IDispatching, IRiseEvent } from './common/models/common.model';
+import {
+  getCountryStyle,
+  getDataForHeatMap,
+  getGeoJsonData,
+  getMapControlsTemplate,
+  getSettingsTemplate,
+  getTooltipTemplate,
+  onCountryHighLight,
+  pointToLayer,
+  roundToPowerOfTen,
+} from './common/helpers/map.helpers';
+import {
+  DataKey,
+} from './common/models/common.model';
 
-export default class Map implements IDispatching {
+export default class Map {
   private root: HTMLElement;
   private legendElement: HTMLElement;
   private settingsElement: HTMLElement;
+  private tooltipElement: HTMLElement;
   private mapElement = null;
   private layer = null;
   private countriesLayer;
@@ -37,21 +56,12 @@ export default class Map implements IDispatching {
 
   constructor(covidData: ICovidData[]) {
     this.data = covidData;
-    console.log(this.data);
     this.root = document.querySelector('#map');
-  }
-
-  public update(options: IDispatchArgument, cb: IRiseEvent) {
-    console.log(options);
-    console.log(cb);
-    this.init();
   }
 
   public init(): void {
     if (this.data) {
       this.render(this.currentDataType);
-    } else {
-      console.log('Api Caching in progress, please try again later')
     }
   }
 
@@ -65,7 +75,7 @@ export default class Map implements IDispatching {
     this.insertLegend();
     this.insertSettings();
     this.addTileLayer();
-    this.addCountriesLayer(markersGeoData);
+    this.addCountriesLayer();
     this.addMarkersLayer(markersGeoData);
   }
 
@@ -73,7 +83,6 @@ export default class Map implements IDispatching {
     const { data, scale } = getDataForHeatMap(this.data, dataKey);
     this.scale = scale;
     const markersGeoData = getGeoJsonData(data);
-    console.log(this.markersLayers);
     this.mapElement.removeLayer(this.markersLayers);
     this.addMarkersLayer(markersGeoData);
   }
@@ -87,11 +96,11 @@ export default class Map implements IDispatching {
     this.mapElement.addLayer(this.layer);
   }
 
-  private addCountriesLayer(markersGeoData: Common): void {
+  private addCountriesLayer(): void {
     this.countriesLayer = Leaflet.geoJSON();
     this.countriesLayer.initialize(geoData, {
       onEachFeature: (feature, layer) => {
-        this.eachCountryHandler(feature, layer, markersGeoData.features);
+        this.eachCountryHandler(feature, layer);
       },
       style: getCountryStyle,
     });
@@ -99,15 +108,20 @@ export default class Map implements IDispatching {
   }
 
   private addMarkersLayer(data: Common): void {
-    this.markersLayers = Leaflet.geoJSON(data, {
-      pointToLayer
-    }).addTo(this.mapElement);
+    this.markersLayers = Leaflet.geoJSON();
+    this.markersLayers.initialize(data, {
+      onEachFeature: (feature, layer) => {
+        this.eachMarkerHandler(feature, layer);
+      },
+      pointToLayer,
+    });
+    this.markersLayers.addTo(this.mapElement);
   }
 
   private insertTooltip() {
-    const tooltipElement: HTMLElement = document.createElement('div');
-    tooltipElement.id = 'tooltip';
-    (this.root as HTMLElement).prepend(tooltipElement);
+    this.tooltipElement = document.createElement('div');
+    this.tooltipElement.id = 'tooltip';
+    (this.root as HTMLElement).prepend(this.tooltipElement);
   }
 
   private insertLegend() {
@@ -176,20 +190,17 @@ export default class Map implements IDispatching {
   private showSettings(): void {
     this.settingsElement.classList.toggle('show-map-settings');
     if (this.settingsElement.classList.contains('show-map-settings')) {
-      this.settingsElement.innerHTML = this.getSettingsTemplate();
+      this.settingsElement.innerHTML = getSettingsTemplate();
 
       document.getElementById('case').addEventListener('click', () => {
-        console.log(this.dataType.cases);
         this.currentDataType = this.dataType.cases;
         this.changeHeatMapComponents(this.currentDataType);
       });
       document.getElementById('recovered').addEventListener('click', () => {
-        console.log(this.dataType.recovered);
         this.currentDataType = this.dataType.recovered;
         this.changeHeatMapComponents(this.currentDataType);
       });
       document.getElementById('deaths').addEventListener('click', () => {
-        console.log(this.dataType.deaths);
         this.currentDataType = this.dataType.deaths;
         this.changeHeatMapComponents(this.currentDataType);
       });
@@ -207,8 +218,8 @@ export default class Map implements IDispatching {
       .map((item: IMapLegendItem, index, arr) => {
         const MARKER_SIZE_STEP = 0.3;
         const { markerWeight, currentKey } = item;
-        const width = Number(MARKER_SIZE_STEP * item.markerWeight).toFixed(1);
-        const height = Number(MARKER_SIZE_STEP * item.markerWeight).toFixed(1);
+        const width = Number(MARKER_SIZE_STEP * markerWeight).toFixed(1);
+        const height = Number(MARKER_SIZE_STEP * markerWeight).toFixed(1);
         const styles = `width: ${width}em; height: ${height}em`;
         const minValue = roundToPowerOfTen(item.range.min, Math.floor(Math.log10(item.range.min)));
         const maxValue = roundToPowerOfTen(item.range.max, Math.floor(Math.log10(item.range.max)));
@@ -230,27 +241,12 @@ export default class Map implements IDispatching {
     return `<h3 class="legend-title">Legend</h3><ul class="legend-list">${elements}</ul>`;
   }
 
-  private changeDataType(value: string): void {
-    console.log(value);
-  }
-
-  private getSettingsTemplate() {
-    const form = `
-    <div id="settings">
-      <button id="case">case</button><br/>
-      <button id="deaths">deaths</button><br/>
-      <button id="recovered">recovered</button><br/>
-    </div>`;
-    return `<h3>Settings</h3>${form}`;
-  }
+  // private changeDataType(value: string): void {
+  //   console.log(value);
+  // }
 
   private makeMapDisabled() {
-    // this.mapElement.dragging.disable();
-    // this.mapElement.touchZoom.disable();
     this.mapElement.doubleClickZoom.disable();
-    // this.mapElement.scrollWheelZoom.disable();
-    // this.mapElement.boxZoom.disable();
-    // this.mapElement.keyboard.disable();
     if (this.mapElement.tap) {
       this.mapElement.tap.disable();
     }
@@ -258,12 +254,7 @@ export default class Map implements IDispatching {
   }
 
   private makeMapEnable() {
-    // this.mapElement.dragging.enable();
-    // this.mapElement.touchZoom.enable();
     this.mapElement.doubleClickZoom.enable();
-    // this.mapElement.scrollWheelZoom.enable();
-    // this.mapElement.boxZoom.enable();
-    // this.mapElement.keyboard.enable();
     if (this.mapElement.tap) {
       this.mapElement.tap.enable();
     }
@@ -272,36 +263,18 @@ export default class Map implements IDispatching {
 
   private onCountryMouseOut(e) {
     this.countriesLayer.resetStyle(e.target);
-    const tooltip: HTMLElement = document.querySelector('#tooltip');
-    tooltip.style.display = 'none';
+    this.hideTooltip();
   }
 
-  private eachCountryHandler(feature: IFeature, layer, markersGeoData: Common[]) {
+  private eachCountryHandler(feature: IFeature, layer) {
     layer.on({
-      click: (e) => {
-        // const countryName = e.target.feature.properties.name;
+      click: () => {
         const countryId = feature.id;
-        console.log(e.target.feature);
-        console.log(feature);
-        // const country: { [k: string]: any } = this.getCountryByName(countryName);
-        // if (!country) {
-        //   return;
-        // }
-
-        // const newCountryCodeToGo: string = country.CountryCode;
         const newCountryCodeToGo: string = countryId;
 
         if (this.countryCodeToGo !== newCountryCodeToGo) {
           this.countryCodeToGo = newCountryCodeToGo;
-          // const geoItem = markersGeoData
-          //   .find((item: Common) => item.properties.CountryCode === this.countryCodeToGo);
-
-          // if (!geoItem) {
-          //   return;
-          // }
-          // const countryCoords: number[] = geoItem.geometry.coordinates;
-          const country: ICovidData = this.data.find((country: ICovidData) => country.countryInfo.iso3 === countryId);
-          // console.log(countryCoords);
+          const country: ICovidData = this.getCountryById(countryId);
           if (country) {
             this.goToCountry([country.countryInfo.long, country.countryInfo.lat]);
           }
@@ -309,46 +282,38 @@ export default class Map implements IDispatching {
       },
 
       mouseover: (e: { target: { feature: IFeature } }) => {
-        const tooltip: HTMLElement = document.querySelector('#tooltip');
-        const countryId: string = e.target.feature.id;
-        const countryName = e.target.feature.properties.name;
-
-        const item:ICovidData = this.getCountryById(countryId);
-
-        let template = `
-          <div>
-            <h3>${(item && item.country) || countryName}</h3>
-          </div>`;
-
-        if (item) {
-          template = `
-            <div>
-              <h3>${item.country}</h3>
-              <img class="flag" src="${item.countryInfo.flag}">
-              <ul>
-                <li>Total Confirmed: ${item.cases}</li>
-                <li>Total Deaths: ${item.deaths}</li>
-                <li>Total Recovered: ${item.recovered}</li>
-              </ul>
-            </div>`;
-        } else if (!item) {
-          template = `
-            <div>
-              <h3>${countryName}</h3>
-              <ul>
-                <li>Total Confirmed: N/A</li>
-                <li>Total Deaths: N/A</li>
-                <li>Total Recovered: N/A</li>
-              </ul>
-            </div>`;
-        }
-        tooltip.innerHTML = template;
-        tooltip.style.display = 'block';
+        const countryId: string = feature.id;
+        const countryName: string = feature.properties.name as string;
+        const item: ICovidData = this.getCountryById(countryId);
+        this.showTooltip(item, countryName, this.currentDataType);
         onCountryHighLight(e);
       },
 
       mouseout: (e) => this.onCountryMouseOut(e),
     });
+  }
+
+  private eachMarkerHandler(feature: IFeature, layer): void {
+    layer.on({
+      mouseover: (e: { target: { feature: { properties: ICovidData } } }) => {
+        const item: ICovidData = e.target.feature.properties as ICovidData;
+        const countryName: string = item.country;
+        this.showTooltip(item, countryName, this.currentDataType);
+      },
+
+      mouseout: () => this.hideTooltip(),
+    });
+  }
+
+  private showTooltip(item: ICovidData, countryName: string, currentKey: DataKey): void {
+    const template = getTooltipTemplate(item, countryName, currentKey);
+    this.tooltipElement.innerHTML = template;
+    this.tooltipElement.style.display = 'block';
+  }
+
+  private hideTooltip(): void {
+    this.tooltipElement = document.querySelector('#tooltip');
+    this.tooltipElement.style.display = 'none';
   }
 
   private goToCountry(countryCoords: number[]) {
@@ -357,11 +322,8 @@ export default class Map implements IDispatching {
 
   private getCountryById(id: string): ICovidData {
     if (this.data) {
-      return this.data
-        .find(({ countryInfo }) => countryInfo.iso3 === id);
+      return this.data.find(({ countryInfo }) => countryInfo.iso3 === id);
     }
     return null;
   }
 }
-
-//Math.round(counter / (population / 100000))

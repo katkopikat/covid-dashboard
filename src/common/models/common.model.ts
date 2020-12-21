@@ -20,6 +20,6 @@ export interface IRiseEvent {
   (option: IDispatchArgument): void;
 }
 
-export interface IDispatching {
+export interface IUpdating {
   update(options: IDispatchArgument, callback: IRiseEvent): void;
 }

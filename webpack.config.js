@@ -81,7 +81,7 @@ module.exports = {
       filename: 'styles/[name].[contenthash].css',
       chunkFilename: '[id].css',
     }),
-    // new ESLintPlugin(),
+    new ESLintPlugin(),
     // new CopyWebpackPlugin([
     // { from: './assets/', to: './' },
     // {from: './src/img', to: './img/'},
