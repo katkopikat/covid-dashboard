@@ -11,6 +11,9 @@ $icon-color: #2b2b2b;
 $font: Roboto, sans-serif;
 $heading-font:'Gudea', sans-serif;
 
+@import '../../../node_modules/leaflet/dist/leaflet.css';
+@import './blocks/map.scss';
+
 * {
   margin: 0;
   padding: 0;
@@ -232,30 +235,6 @@ body {
   padding-bottom: 0.3rem;
 }
 
-<<<<<<< HEAD
-#map {
-  grid-column-start: 1;
-  grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 3;
-}
-
-.visually-hidden,
-.visually-hidden:not(:focus):not(:active),
-input[type='checkbox'].visually-hidden,
-input[type='radio'].visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  border: 0;
-  clip: rect(0 0 0 0);
-  clip-path: inset(100%);
-  white-space: nowrap;
-}
-=======
 .settings__block {
   z-index: 2;
   position: absolute;
@@ -371,4 +350,3 @@ input:checked[type="checkbox"]::before {
   }
 }
 
->>>>>>> develop

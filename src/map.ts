@@ -24,6 +24,7 @@ import {
 import {
   DataKey,
 } from './common/models/common.model';
+import MapService from './common/services/map.service';
 
 export default class Map implements IUpdate {
   private readonly root: HTMLElement;
@@ -56,12 +57,19 @@ export default class Map implements IUpdate {
   private scale: IMapLegendItem[];
   private dataType = DataKey;
   private currentDataType: DataKey = DataKey.cases;
+  private mapService: MapService;
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
-    this.root = document.querySelector('#map');
+    this.root = document.querySelector('.map');
+    this.mapService = new MapService();
+    this.mapService.getMapData()
+      .then((data: ICovidData[]) => {
+        this.data = data;
+        this.init();
+      });
   }
-  
+
   update(params: Params): void {
     console.log(params, this);
   }

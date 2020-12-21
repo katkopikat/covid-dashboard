@@ -1,7 +1,3 @@
-$red: #aa213a;
-$green: #3bcc92;
-$blue: #1d6dec;
-
 .icon-marker {
   display: flex;
   position: relative;
@@ -22,15 +18,15 @@ $blue: #1d6dec;
 }
 
 .icon-marker--deaths {
-  background-color: $blue;
+  background-color: $die-color;
 }
 
 .icon-marker--cases {
-  background-color: $red;
+  background-color: $desease-color;
 }
 
 .icon-marker--recovered {
-  background-color: $green;
+  background-color: $recovered-color;
 }
 
 .icon-marker-tooltip {
@@ -204,17 +200,33 @@ $blue: #1d6dec;
 }
 
 .legend-marker--deaths {
-  background-color: $blue;
+  background-color: $die-color;
 }
 
 .legend-marker--cases {
-  background-color: $red;
+  background-color: $desease-color;
 }
 
 .legend-marker--recovered {
-  background-color: $green;
+  background-color: $recovered-color;
 }
 
 .legend-title {
   text-align: center;
+}
+
+.visually-hidden,
+.visually-hidden:not(:focus):not(:active),
+input[type='checkbox'].visually-hidden,
+input[type='radio'].visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  white-space: nowrap;
 }
