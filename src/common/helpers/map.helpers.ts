@@ -36,16 +36,23 @@ const getMarkerSize = (numb: number, scale: IMapLegendItem[]): number => {
 
 const generateScale = (value: number, currentKey: string, maxItemsCount = 9, startDiv = 2): IMapLegendItem[] => {
   let scale: IMapLegendItem[] = [];
+  let count = 0;
 
-  for (let i = value; i >= 1000; i /= startDiv) {
+  for (let i = value; i >= 1000 || count < maxItemsCount; i /= startDiv) {
+    const minValue: number = Math.floor(i / startDiv);
+    const maxValue: number = Math.floor(i);
     const item: IMapLegendItem = {
       range: {
-        min: Math.floor(i / startDiv),
-        max: Math.floor(i),
+        min: minValue,
+        max: maxValue,
       },
       currentKey,
     };
     scale.push(item);
+    count += 1;
+    if (minValue === 1) {
+      break;
+    }
   }
 
   if (scale.length > maxItemsCount) {
