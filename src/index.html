@@ -29,27 +29,10 @@
       <section class="countries content__block" >
         <div class="settings__icons search_country">
           <input class="input_country" placeholder="Input country">
-          <i class="fas fa-sliders-h"></i>
+          <i class="btn_settings--countries fas fa-sliders-h"></i>
           <i class="btn_fullscreen--countries fas fa-expand"></i>
         </div>
-        <ul class="countries__list">
-          <li class="countries__item">
-            <span class="flag"></span>
-            <span class="country__number">1 417 072</span>
-            <span class="country__name">Columbia</span>
-          </li>
-          <li class="countries__item">
-            <span class="flag"></span>
-            <span class="country__number">1 320 473</span>
-            <span class="country__name">Germany</span>
-          </li>
-        </ul>
-      </section>
-      <section id="map" class="map content__block" >
-      </section>
-      <div class="wrapper_dashboard_chart">
-      <section class="dashboard content__block">
-        <div class="settings__block hide">
+        <div class="settings__block settings__countries hide">
           <h3 class="settings__heading">Settings </h3>
           <div class="settings__period">
             <h4 class="settings__subheading">Period: </h4>
@@ -67,6 +50,106 @@
             <span class="btn__numeric numeric--absolute">absolute</span>
            <span class="btn__numeric numeric---population">per 100k people</span>
           </div>
+
+          <div class="settings__radio">
+            <h4 class="settings__subheading">Data: </h4>
+            <label for="country_cases">
+              <input type="radio" id="country_cases" name="country_radio" value="cases" checked>
+              <span class="rdo"></span>
+              <span>cases</span>
+            </label>
+            <label for="country_recovered">
+              <input type="radio" id="country_recovered" name="country_radio" value="recovered">
+              <span class="rdo"></span>
+              <span>recovered</span>
+            </label>
+              <label for="country_deaths">
+              <input type="radio" id="country_deaths" name="country_radio" value="deaths">
+              <span class="rdo"></span>
+              <span>deaths</span>
+            </label>
+          </div>
+
+          <button class="btn__settings">OK</button>
+        </div>
+        <ul class="countries__list">
+          <li class="countries__item">
+            <span class="flag"></span>
+            <span class="country__number">1 417 072</span>
+            <span class="country__name">Columbia</span>
+          </li>
+          <li class="countries__item">
+            <span class="flag"></span>
+            <span class="country__number">1 417 072</span>
+            <span class="country__name">Columbia</span>
+          </li>
+        </ul>
+      </section>
+      <section class="map content__block">
+        <div class="settings__icons">
+          <i class="btn_settings--map fas fa-sliders-h"></i>
+          <i class="btn_fullscreen--map fas fa-expand"></i>
+        </div>
+        <div class="settings__block settings__map hide">
+          <h3 class="settings__heading">Settings </h3>
+          <div class="settings__period">
+            <h4 class="settings__subheading">Period: </h4>
+            <form action="#">
+            <input type="checkbox" name="period" value="alltime">
+          </form>
+            <span class="btn__period period--alltime">of all time</span>
+            <span class="btn__period period--day">on the day</span>
+          </div>
+          <div class="settings__numeric">
+            <h4 class="settings__subheading">Numeric display: </h4>
+            <form action="#">
+              <input type="checkbox" name="numeric" value="absolite">
+            </form>
+            <span class="btn__numeric numeric--absolute">absolute</span>
+           <span class="btn__numeric numeric---population">per 100k people</span>
+          </div>
+          <div class="settings__radio">
+            <h4 class="settings__subheading">Data: </h4>
+            <label for="map_cases">
+              <input type="radio" id="map_cases" name="map_radio" checked>
+              <span class="rdo"></span>
+              <span>cases</span>
+            </label>
+            <label for="map_recovered">
+              <input type="radio" id="map_recovered" name="map_radio">
+              <span class="rdo"></span>
+              <span>recovered</span>
+            </label>
+              <label for="map_deaths">
+              <input type="radio" id="map_deaths" name="map_radio">
+              <span class="rdo"></span>
+              <span>deaths</span>
+            </label>
+          </div>
+          <button class="btn__settings">OK</button>
+        </div>
+      </section>
+      <div class="wrapper_dashboard_chart">
+      <section class="dashboard content__block">
+        <div class="settings__block settings__dashboard hide">
+          <h3 class="settings__heading">Settings </h3>
+          <div class="settings__period">
+            <h4 class="settings__subheading">Period: </h4>
+            <form action="#">
+            <input type="checkbox" name="period" value="alltime">
+          </form>
+            <span class="btn__period period--alltime">of all time</span>
+            <span class="btn__period period--day">on the day</span>
+          </div>
+          <div class="settings__numeric">
+            <h4 class="settings__subheading">Numeric display: </h4>
+            <form action="#">
+              <input type="checkbox" name="numeric" value="absolite">
+            </form>
+            <span class="btn__numeric numeric--absolute">absolute</span>
+           <span class="btn__numeric numeric---population">per 100k people</span>
+          </div>
+
           <button class="btn__settings">OK</button>
         </div>
         <div class="settings__icons">
@@ -87,16 +170,50 @@
           </span>
       </section>
       <section class="piechart content__block">
-        <div class="settings__icons">
-          <i class="fas fa-sliders-h"></i>
-          <i class="btn_fullscreen--piechart fas fa-expand"></i>
-        </div>
         <div class="piechart__wrapper"></div>
       </section>
       <section class="chart content__block" >
         <div class="settings__icons">
-          <i class="fas fa-sliders-h"></i>
+          <i class="btn_settings--chart fas fa-sliders-h"></i>
           <i class="btn_fullscreen--chart fas fa-expand"></i>
+        </div>
+        <div class="settings__block settings__chart hide">
+          <h3 class="settings__heading">Settings </h3>
+          <div class="settings__period">
+            <h4 class="settings__subheading">Period: </h4>
+            <form action="#">
+            <input type="checkbox" name="period" value="alltime">
+          </form>
+            <span class="btn__period period--alltime">of all time</span>
+            <span class="btn__period period--day">on the day</span>
+          </div>
+          <div class="settings__numeric">
+            <h4 class="settings__subheading">Numeric display: </h4>
+            <form action="#">
+              <input type="checkbox" name="numeric" value="absolite">
+            </form>
+            <span class="btn__numeric numeric--absolute">absolute</span>
+           <span class="btn__numeric numeric---population">per 100k people</span>
+          </div>
+          <div class="settings__radio">
+            <h4 class="settings__subheading">Data: </h4>
+            <label for="chart_cases">
+              <input type="radio" id="chart_cases" name="radio" checked>
+              <span class="rdo"></span>
+              <span>cases</span>
+            </label>
+            <label for="chart_recovered">
+              <input type="radio" id="chart_recovered" name="radio">
+              <span class="rdo"></span>
+              <span>recovered</span>
+            </label>
+              <label for="chart_deaths">
+              <input type="radio" id="chart_deaths" name="radio">
+              <span class="rdo"></span>
+              <span>deaths</span>
+            </label>
+          </div>
+          <button class="btn__settings">OK</button>
         </div>
           <h2 class="heading__section ">
             <span class="chart__toggle-mode chart_mode-global mode_active"> Global Cases </span> |
@@ -107,6 +224,41 @@
           </div>
       </section>
     </div>
+
+    <section class="chart chart--device content__block" >
+      <div class="settings__icons">
+        <i class="btn_settings--chart fas fa-sliders-h"></i>
+        <i class="btn_fullscreen--chart fas fa-expand"></i>
+      </div>
+      <div class="settings__block settings__chart hide">
+        <h3 class="settings__heading">Settings </h3>
+        <div class="settings__period">
+          <h4 class="settings__subheading">Period: </h4>
+          <form action="#">
+          <input type="checkbox" name="period" value="alltime">
+        </form>
+          <span class="btn__period period--alltime">of all time</span>
+          <span class="btn__period period--day">on the day</span>
+        </div>
+        <div class="settings__numeric">
+          <h4 class="settings__subheading">Numeric display: </h4>
+          <form action="#">
+            <input type="checkbox" name="numeric" value="absolite">
+          </form>
+          <span class="btn__numeric numeric--absolute">absolute</span>
+         <span class="btn__numeric numeric---population">per 100k people</span>
+        </div>
+        <button class="btn__settings">OK</button>
+      </div>
+        <h2 class="heading__section ">
+          <span class="chart__toggle-mode chart_mode-global mode_active"> Global Cases </span> |
+          <span class="chart__toggle-mode chart_mode--recovered"> Recovered</span> |
+          <span class="chart__toggle-mode chart_mode--death"> Death </span>
+        </h2>
+        <div class="chart__wrapper">
+        </div>
+    </section>
+
   </div>
   </div>
     <footer class="footer">
