@@ -40,6 +40,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "chart.js": "^2.9.4",
     "country-list-js": "^3.1.7",
     "leaflet": "^1.7.1",
     "normalize.css": "^8.0.1"

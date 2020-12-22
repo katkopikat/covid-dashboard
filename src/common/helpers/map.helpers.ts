@@ -111,7 +111,7 @@ const getDataForHeatMap = (
 
   const scale = generateScale(copyData.slice(-1)[0][currentKey], currentKey);
   const scaleWithWeight = getScaleWithWeight(scale);
-  console.log(scaleWithWeight)
+  console.log(scaleWithWeight);
 
   const data = copyData.map((item: ICovidData) => ({
     ...item,
@@ -179,9 +179,9 @@ const roundToPowerOfTen = (num: number, pow: number): number => {
 
 const getMapControlsTemplate = () => `
   <h3 class="visually-hidden">controls</h3>
-  <button class="map-controls__button" data-zoom-in>+</button>
-  <button class="map-controls__button" data-zoom-out>-</button>
-  <button class="map-controls__button" data-show-legend>L</button>`;
+  <button class="map-controls__button" data-zoom-in><i class="fas fa-search-plus"></i></button>
+  <button class="map-controls__button" data-zoom-out><i class="fas fa-search-minus"></i></button>
+  <button class="map-controls__button" data-show-legend><i class="fas fa-book-open"></i></button>`;
 
 const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: DataKey): string => {
   let template = `
@@ -192,24 +192,25 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
   if (item) {
     template = `
         <div>
-          <h3>${item.country}</h3>
-          <img class="flag" src="${item.countryInfo.flag}">
-          <ul>
-            <li>Total Confirmed: ${item.cases}</li>
-            <li>Total Deaths: ${item.deaths}</li>
-            <li>Total Recovered: ${item.recovered}</li>
-            <li>${currentKey}: ${item[currentKey]}</li>
-          </ul>
+          <header class="map-tooltip__header"/>
+            <div class="map-flag__wrapper">
+              <img class="map-flag" src="${item.countryInfo.flag}" alt="flag">
+            </div>
+            <h3 class="map-tooltip__title">${item.country}</h3>
+          </header>
+          <p class="map-tooltip__description"><span class="map-tooltip__key">${currentKey}</span>: <b>${item[currentKey].toLocaleString()}</b></p>
+
+          <div id="map-tooltip__canvas-holder">
+            <canvas id="map-tooltip__chart-area" style="width:200px;height: 200px;"></canvas>
+          </div>
         </div>`;
   } else if (!item) {
     template = `
         <div>
-          <h3>${countryName}</h3>
-          <ul>
-            <li>Total Confirmed: N/A</li>
-            <li>Total Deaths: N/A</li>
-            <li>Total Recovered: N/A</li>
-          </ul>
+        <header class="map-tooltip__header"/>
+            <h3 class="map-tooltip__title">${countryName}</h3>
+          </header>
+          <p class="map-tooltip__description">${currentKey}: <b>N/A</b></p>
         </div>`;
   }
   return template;
@@ -224,4 +225,5 @@ export {
   getDataForHeatMap,
   roundToPowerOfTen,
   getTooltipTemplate,
+  convertDataToRelative,
 };

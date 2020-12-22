@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-cycle,object-curly-newline
-import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 import Leaflet from 'leaflet';
+import {
+  EventFunc, Params, Events, IUpdate, DataTypes,
+} from './dispatch';
 import mapConfig from './common/config/map.config';
 import {
   Common,
@@ -11,6 +13,7 @@ import {
 } from './common/models/map.model';
 import geoData from './common/data/countries.geo.json';
 import {
+  convertDataToRelative,
   getCountryStyle,
   getDataForHeatMap,
   getGeoJsonData,
@@ -20,10 +23,9 @@ import {
   pointToLayer,
   roundToPowerOfTen,
 } from './common/helpers/map.helpers';
-import {
-  DataKey,
-} from './common/models/common.model';
+import { DataKey } from './common/models/common.model';
 import MapService from './common/services/map.service';
+import Chart from 'chart.js';
 
 export default class Map implements IUpdate {
   private readonly root: HTMLElement;
@@ -68,11 +70,10 @@ export default class Map implements IUpdate {
     };
 
     this.mapService = new MapService();
-    this.mapService.getMapData()
-      .then((data: ICovidData[]) => {
-        this.data = data;
-        this.init();
-      });
+    this.mapService.getMapData().then((data: ICovidData[]) => {
+      this.data = data;
+      this.init();
+    });
   }
 
   update(params: Params): void {
@@ -112,6 +113,19 @@ export default class Map implements IUpdate {
     this.addCountriesLayer();
     this.addMarkersLayer(markersGeoData);
     this.addSettingsListener();
+    this.addResizeListener();
+  }
+
+  addResizeListener(): void {
+    const mapFullButton: HTMLButtonElement = this.root.querySelector('.btn_fullscreen--map');
+
+    if (mapFullButton) {
+      mapFullButton.addEventListener('click', () => {
+        setTimeout(() => {
+          this.mapElement.invalidateSize();
+        }, 400);
+      });
+    }
   }
 
   private getDataKey(): DataKey {
@@ -167,7 +181,9 @@ export default class Map implements IUpdate {
       this.postSettings(newSettings);
     });
 
-    const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll('[name="map_radio"]');
+    const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll(
+      '[name="map_radio"]',
+    );
 
     Array.from(dataTypeControllers).forEach((radioController: HTMLInputElement) => {
       // default cases; other - recovered | deaths
@@ -216,6 +232,14 @@ export default class Map implements IUpdate {
     this.tooltipElement = document.createElement('div');
     this.tooltipElement.id = 'tooltip';
     (this.root as HTMLElement).prepend(this.tooltipElement);
+
+    this.tooltipElement.addEventListener('mouseover', () => {
+      this.tooltipElement.style.display = 'block';
+    });
+
+    this.tooltipElement.addEventListener('mouseout', () => {
+      this.tooltipElement.style.display = 'none';
+    });
   }
 
   private insertLegend() {
@@ -370,6 +394,9 @@ export default class Map implements IUpdate {
     const template = getTooltipTemplate(item, countryName, currentKey);
     this.tooltipElement.innerHTML = template;
     this.tooltipElement.style.display = 'block';
+    if (item) {
+      this.addChart(item);
+    }
   }
 
   private hideTooltip(): void {
@@ -388,5 +415,67 @@ export default class Map implements IUpdate {
       return this.data.find(({ countryInfo }) => countryInfo.iso3 === id);
     }
     return null;
+  }
+
+  private addChart(item: ICovidData) {
+    let chartData: number[] = this.dataSettings.lastDay
+      ? [item.todayDeaths, item.todayCases, item.todayRecovered]
+      : [item.deaths, item.cases, item.recovered];
+
+    if (this.dataSettings.per100k) {
+      const currentKey: DataKey = this.getDataKey();
+      chartData = chartData.map((value: number, index: number) => {
+        if (/death/gi.test(currentKey) && index === 0) {
+          return value;
+        }
+        if (/case/gi.test(currentKey) && index === 1) {
+          return value;
+        }
+        if (/recovered/gi.test(currentKey) && index === 2) {
+          return value;
+        }
+        return convertDataToRelative(value, item.population);
+      });
+    }
+
+    const chartLegend: string[] = this.dataSettings.lastDay
+      ? [DataKey.todayDeaths, DataKey.todayCases, DataKey.todayRecovered]
+      : [DataKey.deaths, DataKey.cases, DataKey.recovered];
+
+    const config = {
+      type: 'doughnut',
+      data: {
+        datasets: [
+          {
+            data: chartData,
+            backgroundColor: [
+              '#AA213A',
+              '#1d6dec',
+              '#3BCC92',
+            ],
+            label: 'Dataset 1',
+          },
+        ],
+        labels: chartLegend,
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Doughnut Chart',
+          },
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+        },
+      },
+    };
+    const ctx = (document.getElementById('map-tooltip__chart-area') as any).getContext('2d');
+    (window as any).myDoughnut = new Chart(ctx, config);
   }
 }

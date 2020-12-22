@@ -22,6 +22,9 @@ export interface ICovidData {
   population: number;
   recovered: number;
   country: string;
+  todayCases: number;
+  todayDeaths: number;
+  todayRecovered: number;
 
   countryInfo: {
     iso2: string;
