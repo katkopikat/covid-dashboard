@@ -201,7 +201,7 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
           <p class="map-tooltip__description"><span class="map-tooltip__key">${currentKey}</span>: <b>${item[currentKey].toLocaleString()}</b></p>
 
           <div id="map-tooltip__canvas-holder">
-            <canvas id="map-tooltip__chart-area" style="width:200px;height: 200px;"></canvas>
+            <canvas id="map-tooltip__chart-area" style="width:150px;height: 150px;"></canvas>
           </div>
         </div>`;
   } else if (!item) {

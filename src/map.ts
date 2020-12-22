@@ -460,9 +460,12 @@ export default class Map implements IUpdate {
       },
       options: {
         responsive: false,
+        legend: {
+          display: false,
+        },
         plugins: {
           legend: {
-            position: 'right',
+            display: false,
           },
           title: {
             display: true,
