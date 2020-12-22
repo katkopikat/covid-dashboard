@@ -59,6 +59,5 @@ export default class Dispatch {
 
   start() {
     console.log('started', this);
-    this.map.example();
   }
 }
