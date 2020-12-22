@@ -22,15 +22,18 @@
   }
 }
 
-.icon-marker--deaths {
+.icon-marker--deaths,
+.icon-marker--todayDeaths {
   background-color: $die-color;
 }
 
-.icon-marker--cases {
+.icon-marker--cases,
+.icon-marker--todayCases {
   background-color: $desease-color;
 }
 
-.icon-marker--recovered {
+.icon-marker--recovered,
+.icon-marker--todayRecovered {
   background-color: $recovered-color;
 }
 
@@ -145,15 +148,18 @@
   box-shadow: 0 2px 5px rgba(black, 0.9);
 }
 
-.legend-marker--deaths {
+.legend-marker--deaths,
+.legend-marker--todayDeaths {
   background-color: $die-color;
 }
 
-.legend-marker--cases {
+.legend-marker--cases,
+.legend-marker--todayCases {
   background-color: $desease-color;
 }
 
-.legend-marker--recovered {
+.legend-marker--recovered,
+.legend-marker--todayRecovered {
   background-color: $recovered-color;
 }
 
@@ -180,6 +186,8 @@ input[type='radio'].visually-hidden {
 #map {
   & .settings__icons {
     @include mapElement(relative);
+
+    width: 50px;
   }
 
   & .settings__map {

@@ -111,6 +111,7 @@ const getDataForHeatMap = (
 
   const scale = generateScale(copyData.slice(-1)[0][currentKey], currentKey);
   const scaleWithWeight = getScaleWithWeight(scale);
+  console.log(scaleWithWeight)
 
   const data = copyData.map((item: ICovidData) => ({
     ...item,
@@ -126,8 +127,11 @@ const getDataForHeatMap = (
 const pointToLayer = (feature: { [k: string]: any }, latlng: number[]) => {
   const MARKER_SIZE_STEP = 0.3;
   const { markerIndex, currentKey } = feature.properties;
-  const width = MARKER_SIZE_STEP * markerIndex;
-  const height = MARKER_SIZE_STEP * markerIndex;
+  const currentValue = feature.properties[currentKey];
+  // const coefficient = 1;
+  const coefficient = currentValue === 0 ? 0 : 1;
+  const width = MARKER_SIZE_STEP * markerIndex * coefficient;
+  const height = MARKER_SIZE_STEP * markerIndex * coefficient;
   const html = `
     <span class="icon-marker icon-marker--${currentKey}" style="width: ${width}em; height: ${height}em"></span>
   `;
@@ -177,8 +181,7 @@ const getMapControlsTemplate = () => `
   <h3 class="visually-hidden">controls</h3>
   <button class="map-controls__button" data-zoom-in>+</button>
   <button class="map-controls__button" data-zoom-out>-</button>
-  <button class="map-controls__button" data-show-legend>L</button>
-  <button class="map-controls__button" data-show-settings>S</button>`;
+  <button class="map-controls__button" data-show-legend>L</button>`;
 
 const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: DataKey): string => {
   let template = `
@@ -212,16 +215,6 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
   return template;
 };
 
-const getSettingsTemplate = () => {
-  const form = `
-  <div id="settings">
-    <button id="case">case</button><br/>
-    <button id="deaths">deaths</button><br/>
-    <button id="recovered">recovered</button><br/>
-  </div>`;
-  return `<h3>Settings</h3>${form}`;
-};
-
 export {
   getCountryStyle,
   getGeoJsonData,
@@ -231,5 +224,4 @@ export {
   getDataForHeatMap,
   roundToPowerOfTen,
   getTooltipTemplate,
-  getSettingsTemplate,
 };

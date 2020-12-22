@@ -15,7 +15,6 @@ import {
   getDataForHeatMap,
   getGeoJsonData,
   getMapControlsTemplate,
-  getSettingsTemplate,
   getTooltipTemplate,
   onCountryHighLight,
   pointToLayer,
@@ -48,17 +47,15 @@ export default class Map implements IUpdate {
   };
 
   private data: ICovidData[];
-  private absoluteData: ICovidData[];
-  private relatedData: ICovidData[];
   private countryCodeToGo: string;
   private zoomInButton: HTMLButtonElement;
   private zoomOutButton: HTMLButtonElement;
   private showLegendButton: HTMLButtonElement;
   private scale: IMapLegendItem[];
-  private dataType = DataKey;
   private currentDataType: DataKey = DataKey.cases;
   private mapService: MapService;
   private dataSettings: Params;
+  private countryFlyInZoom = 4;
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
@@ -79,10 +76,15 @@ export default class Map implements IUpdate {
   }
 
   update(params: Params): void {
-    console.log('on update map', params);
     this.dataSettings = { ...params };
     this.changeHeatMapComponents();
-    // console.log(params, this);
+
+    if (this.dataSettings.country !== this.countryCodeToGo && this.dataSettings.country) {
+      const country: ICovidData = this.getCountryById(this.dataSettings.country);
+      if (country) {
+        this.goToCountry([country.countryInfo.long, country.countryInfo.lat]);
+      }
+    }
   }
 
   private postSettings(settings: Params) {
@@ -96,9 +98,9 @@ export default class Map implements IUpdate {
   }
 
   private render(): void {
-    const dataKey: string = this.getDataKey();
+    this.currentDataType = this.getDataKey();
     const { per100k } = this.dataSettings;
-    const { data, scale } = getDataForHeatMap(this.data, dataKey, per100k);
+    const { data, scale } = getDataForHeatMap(this.data, this.currentDataType, per100k);
     this.scale = scale;
     const markersGeoData = getGeoJsonData(data);
     this.renderMap(this.mapOptions);
@@ -112,7 +114,7 @@ export default class Map implements IUpdate {
     this.addSettingsListener();
   }
 
-  private getDataKey(): string {
+  private getDataKey(): DataKey {
     const { dataType } = this.dataSettings;
     const { lastDay } = this.dataSettings;
     const typeAdapter = {
@@ -126,7 +128,7 @@ export default class Map implements IUpdate {
       [DataKey.recovered]: DataKey.todayRecovered,
     };
 
-    let type: string = typeAdapter[dataType];
+    let type: DataKey = typeAdapter[dataType];
 
     if (lastDay) {
       type = lastDayAdapter[type];
@@ -135,9 +137,9 @@ export default class Map implements IUpdate {
   }
 
   private changeHeatMapComponents() {
-    const dataKey: string = this.getDataKey();
+    this.currentDataType = this.getDataKey();
     const { per100k } = this.dataSettings;
-    const { data, scale } = getDataForHeatMap(this.data, dataKey, per100k);
+    const { data, scale } = getDataForHeatMap(this.data, this.currentDataType, per100k);
     this.scale = scale;
     const markersGeoData = getGeoJsonData(data);
     this.mapElement.removeLayer(this.markersLayers);
@@ -153,7 +155,7 @@ export default class Map implements IUpdate {
     periodController.addEventListener('change', (e: InputEvent) => {
       // period controller. Default is false -> period = all time | true -> period = one day
       const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = { ...this.dataSettings, per100k: newValue };
+      const newSettings: Params = { ...this.dataSettings, lastDay: newValue };
       this.postSettings(newSettings);
     });
 
@@ -161,7 +163,7 @@ export default class Map implements IUpdate {
     absoluteController.addEventListener('change', (e: InputEvent) => {
       // absolute controller. Default is false -> numeric = absolute | true -> relative
       const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = { ...this.dataSettings, lastDay: newValue };
+      const newSettings: Params = { ...this.dataSettings, per100k: newValue };
       this.postSettings(newSettings);
     });
 
@@ -177,7 +179,7 @@ export default class Map implements IUpdate {
           recovered: DataTypes.RECOVERED,
         };
 
-        const newSettings: Params = { ...this.dataSettings, lastDay: adapter[newValue] };
+        const newSettings: Params = { ...this.dataSettings, dataType: adapter[newValue] };
         this.postSettings(newSettings);
       });
     });
@@ -244,8 +246,6 @@ export default class Map implements IUpdate {
     this.showLegendButton = mapControls.querySelector('[data-show-legend]');
     this.showLegendButton.addEventListener('click', this.showLegend.bind(this));
 
-    this.showLegendButton = mapControls.querySelector('[data-show-settings]');
-    // this.showLegendButton.addEventListener('click', this.showSettings.bind(this));
     (this.root as HTMLElement).prepend(mapControls);
   }
 
@@ -278,30 +278,6 @@ export default class Map implements IUpdate {
     }
     this.makeMapEnable();
   }
-
-  // private showSettings(): void {
-  //   this.settingsElement.classList.toggle('show-map-settings');
-  //   if (this.settingsElement.classList.contains('show-map-settings')) {
-  //     this.settingsElement.innerHTML = getSettingsTemplate();
-
-  //     document.getElementById('case').addEventListener('click', () => {
-  //       this.currentDataType = this.dataType.cases;
-  //       this.changeHeatMapComponents(this.currentDataType);
-  //     });
-  //     document.getElementById('recovered').addEventListener('click', () => {
-  //       this.currentDataType = this.dataType.recovered;
-  //       this.changeHeatMapComponents(this.currentDataType);
-  //     });
-  //     document.getElementById('deaths').addEventListener('click', () => {
-  //       this.currentDataType = this.dataType.deaths;
-  //       this.changeHeatMapComponents(this.currentDataType);
-  //     });
-  //     this.legendElement.classList.remove('show-legend');
-  //     this.makeMapDisabled();
-  //     return;
-  //   }
-  //   this.makeMapEnable();
-  // }
 
   private getLegendTemplate() {
     const elements: string = this.scale
@@ -361,11 +337,8 @@ export default class Map implements IUpdate {
         const newCountryCodeToGo: string = countryId;
 
         if (this.countryCodeToGo !== newCountryCodeToGo) {
-          this.countryCodeToGo = newCountryCodeToGo;
-          const country: ICovidData = this.getCountryById(countryId);
-          if (country) {
-            this.goToCountry([country.countryInfo.long, country.countryInfo.lat]);
-          }
+          const newSettings: Params = { ...this.dataSettings, country: newCountryCodeToGo };
+          this.postSettings(newSettings);
         }
       },
 
@@ -405,7 +378,9 @@ export default class Map implements IUpdate {
   }
 
   private goToCountry(countryCoords: number[]) {
-    this.mapElement.flyTo(countryCoords.reverse(), 5);
+    this.mapElement.flyTo(countryCoords.reverse());
+    this.zoomInButton.disabled = false;
+    this.zoomOutButton.disabled = false;
   }
 
   private getCountryById(id: string): ICovidData {
