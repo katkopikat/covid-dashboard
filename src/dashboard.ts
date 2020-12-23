@@ -73,7 +73,7 @@ export default class Dashboard implements IUpdate {
   }
 
   static getLink(country: string): string {
-    const link: string = country === 'GLOBAL' ? 'all' : `countries/${country}`;
+    const link: string = country === 'GLOBAL' || country === 'Global' ? 'all' : `countries/${country}`;
     const url: string = `https://disease.sh/v3/covid-19/${link}`;
     return url;
   }
@@ -99,7 +99,7 @@ export default class Dashboard implements IUpdate {
     const countryCases: HTMLElement = this.root.querySelector('.heading__section--cases');
     const countryRecovered: HTMLElement = this.root.querySelector('.heading__section--recovery');
     const countryDeath: HTMLElement = this.root.querySelector('.heading__section--death');
-    if (this.dataSettings.country === 'GLOBAL') {
+    if (this.dataSettings.country === 'GLOBAL' || this.dataSettings.country === 'G') {
       countryCases.textContent = 'Global Cases';
       countryRecovered.textContent = 'Global Recovered';
       countryDeath.textContent = 'Global Deaths';
