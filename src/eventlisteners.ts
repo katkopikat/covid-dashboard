@@ -64,7 +64,7 @@ function showContentBlocks(): void {
     btn.addEventListener('click', () => {
       settingsBlocks.forEach((block) => {
         block.classList.add('hide');
-        // ПЕРЕРИСОВКА ВСЕГО
+      // ПЕРЕРИСОВКА ВСЕГО
       });
     });
   });
@@ -103,3 +103,41 @@ function showContentBlocks(): void {
     });
   });
 }());
+
+// (function (): void {
+//   btnSettingsDashboard.addEventListener('click', () => {
+//     settingsDashboard.classList.remove('hide');
+//   });
+
+//   okBtnDashboard.addEventListener('click', () => {
+//     // ПЕРЕРИСОВКА ВСЕГО
+//     settingsDashboard.classList.add('hide');
+//   });
+
+//   btnsFullScreen.forEach((btn) => {
+//     btn.addEventListener('click', () => {
+//       if (!openFullScreen) {
+//         openFullScreen = true;
+//         hideContentBlocks();
+//         if (btn.classList.contains('btn_fullscreen--countries')) {
+//           countriesFullScreen();
+//         }
+//         if (btn.classList.contains('btn_fullscreen--dashboard')) {
+//           dashboardFullScreen();
+//         }
+//         if (btn.classList.contains('btn_fullscreen--map')) {
+//           mapFullScreen();
+//         }
+//         if (btn.classList.contains('btn_fullscreen--chart')) {
+//           chartFullScreen();
+//         }
+//         if (btn.classList.contains('btn_fullscreen--piechart')) {
+//           piechartFullScreen();
+//         }
+//       } else {
+//         openFullScreen = false;
+//         showContentBlocks();
+//       }
+//     });
+//   });
+// }());

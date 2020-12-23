@@ -1,0 +1,272 @@
+@mixin mapElement($position: absolute) {
+  position: $position;
+  z-index: 1000;
+}
+
+$border-radius: 1rem;
+
+.icon-marker {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 0.7em;
+  font-weight: bold;
+  // background-color: red;
+  border-radius: 100%;
+  box-shadow: 0 2px 5px rgba(black, 0.9);
+
+  &:hover {
+    .icon-marker-tooltip {
+      display: block;
+    }
+  }
+}
+
+.icon-marker--deaths,
+.icon-marker--todayDeaths {
+  background-color: $die-color;
+}
+
+.icon-marker--cases,
+.icon-marker--todayCases {
+  background-color: $desease-color;
+}
+
+.icon-marker--recovered,
+.icon-marker--todayRecovered {
+  background-color: $recovered-color;
+}
+
+#tooltip {
+  @include mapElement;
+
+  top: 50px;
+  right: 10px;
+  width: 200px;
+  min-height: 100px;
+  padding-bottom: 20px;
+  display: none;
+  border-radius: $border-radius;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(black, 0.9);
+}
+
+.map-tooltip__header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 10px;
+}
+
+.map-flag__wrapper {
+  margin-right: 10px;
+  width: 30px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.map-tooltip__title {
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.map-tooltip__description {
+  padding: 0 20px;
+  font-size: 16px;
+}
+
+.map-flag {
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(black, 0.2);
+}
+
+.map-tooltip__key {
+  text-transform: capitalize;
+}
+
+.map-controls {
+  @include mapElement;
+
+  right: 10px;
+  top: 10px;
+  display: flex;
+}
+
+.map-controls__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background-color: #333;
+  color: #2493f2;
+  outline: none;
+  border: none;
+  border-left: 1px solid rgb(64, 64, 64);
+  border-top: 1px solid rgb(64, 64, 64);
+  border-bottom: 1px solid rgb(64, 64, 64);
+
+  & .fas {
+    padding: 0;
+    margin: 0;
+  }
+
+  &:nth-of-type(1) {
+    border-right: 1px solid rgb(64, 64, 64);
+  }
+
+  &:disabled {
+    cursor: default;
+    color:rgb(64, 64, 64);
+    & .fas {
+      cursor: default;
+      color:rgb(64, 64, 64);
+    }
+
+    &:hover {
+      cursor: default;
+      color:rgb(64, 64, 64);
+    }
+  }
+}
+
+.map-legend {
+  @include mapElement;
+
+  top: 50px;
+  right: -100%;
+  width: 200px;
+  min-height: 100px;
+  border-radius: $border-radius;
+  background-color: #fff;
+  transition: all 300ms;
+}
+
+.show-legend {
+  right: 10px;
+}
+
+.map-settings {
+  @include mapElement;
+
+  top: 50px;
+  right: -100%;
+  width: 200px;
+  min-height: 100px;
+  border-radius: $border-radius;
+  background-color: #fff;
+  transition: all 300ms;
+}
+
+.show-map-settings {
+  right: 10px;
+}
+
+.legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.legend-item {
+  height: 4em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.legend-marker-wrapper {
+  width: 4em;
+  height: 4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.legend-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 0.7em;
+  font-weight: bold;
+  border-radius: 100%;
+  box-shadow: 0 2px 5px rgba(black, 0.9);
+}
+
+.legend-marker--deaths,
+.legend-marker--todayDeaths {
+  background-color: $die-color;
+}
+
+.legend-marker--cases,
+.legend-marker--todayCases {
+  background-color: $desease-color;
+}
+
+.legend-marker--recovered,
+.legend-marker--todayRecovered {
+  background-color: $recovered-color;
+}
+
+.legend-title {
+  text-align: center;
+}
+
+.visually-hidden,
+.visually-hidden:not(:focus):not(:active),
+input[type='checkbox'].visually-hidden,
+input[type='radio'].visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  white-space: nowrap;
+}
+
+#map {
+  & .settings__icons {
+    @include mapElement(relative);
+
+    width: 50px;
+  }
+
+  & .settings__map {
+    // @include mapElement;
+    z-index: 1000;
+  }
+}
+
+.leaflet-control-attribution.leaflet-control {
+  display: none;
+}
+
+#map-tooltip__canvas-holder {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#map-tooltip__chart-area {
+  width: 200px;
+  height: 200px;
+}

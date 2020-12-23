@@ -12,6 +12,10 @@ $icon-color: #2b2b2b;
 $font: Roboto, sans-serif;
 $heading-font:'Gudea', sans-serif;
 
+@import '../../../node_modules/leaflet/dist/leaflet.css';
+@import './blocks/map.scss';
+@import './blocks/doughnut.scss';
+
 * {
   margin: 0;
   padding: 0;
