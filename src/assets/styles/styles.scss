@@ -6,6 +6,7 @@ $desease-color: #1d6dec;
 $light-gray: #A1A1AA;
 $medium-gray: #61616C;
 $dark-gray: #171717;
+$very-dark-gray: #111;
 $footer-bg: #1D1D1D;
 $icon-color: #2b2b2b;
 $font: Roboto,
@@ -15,6 +16,7 @@ sans-serif;
 
 @import '../../../node_modules/leaflet/dist/leaflet.css';
 @import './blocks/map.scss';
+@import './blocks/doughnut.scss';
 
 * {
   margin: 0;
@@ -196,10 +198,11 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.search_country {
+.search_country{
+
   align-items: baseline;
   margin-inline-start: -0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .input_country {
@@ -213,15 +216,28 @@ body {
   margin-right: 1.1rem;
 }
 
+.countries__list {
+  overflow-y: auto;
+  height: calc(100% - 32px);
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: $dark-gray; }
+  &::-webkit-scrollbar-thumb { background: $medium-gray; }
+  &::-webkit-scrollbar-thumb:hover { background: $light-gray; }
+}
+
 .countries__item {
   font-size: 0.9rem;
   list-style: none;
   border-bottom: 1px solid $icon-color;
   padding: .1rem 0;
+
+  &:hover {
+    background-color: $very-dark-gray;
+  }
 }
 
 .country__name {
-  // font-size: 14px;
   line-height: 170%;
   color: $light-gray;
 }
@@ -229,11 +245,24 @@ body {
 .country__number {
   font-weight: bold;
 
-  color: white;
-  padding-right: 1.2rem;
+  padding-right: 0.5rem;
+  padding-left: 0.3rem;
 }
 
-.wrapper_dashboard_chart {
+.country__number--cases {color: $desease-color;}
+.country__number--deaths {color: $die-color;}
+.country__number--recovered {color: $recovered-color;}
+
+.country__flag{
+  position: relative;
+  top: 1px;
+  width: 20px;
+  height: 12px;
+}
+
+// COUNTRIES END
+
+.wrapper_dashboard_chart{
   display: flex;
   flex-wrap: wrap;
 }
@@ -417,16 +446,14 @@ input:checked[type="checkbox"]::before {
   margin-left: -8px;
 }
 
-.rdo+span {
-  margin-left: px;
-  margin-left: 5px;
-  font-size: 0.85rem;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  color: white;
-  display: block;
-  line-height: 160%;
-}
+.rdo + span{
+     margin-left: 5px;
+     font-size: 0.85rem;
+     margin-bottom: 6px;
+     color: white;
+     display: block;
+     line-height: 160%;
+ }
 
 .settings__radio {
   user-select: none;
