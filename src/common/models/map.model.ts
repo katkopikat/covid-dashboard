@@ -34,6 +34,16 @@ export interface ICovidData {
     flag: string;
   }
 }
+export interface ICovidGlobalData {
+  active: number;
+  cases: number;
+  deaths: number;
+  population: number;
+  recovered: number;
+  todayCases: number;
+  todayDeaths: number;
+  todayRecovered: number;
+}
 
 export interface ICovidDataWeight extends ICovidData {
   markerIndex: number;

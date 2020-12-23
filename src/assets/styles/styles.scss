@@ -13,6 +13,7 @@ $heading-font:'Gudea', sans-serif;
 
 @import '../../../node_modules/leaflet/dist/leaflet.css';
 @import './blocks/map.scss';
+@import './blocks/doughnut.scss';
 
 * {
   margin: 0;
