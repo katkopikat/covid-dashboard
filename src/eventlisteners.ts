@@ -1,12 +1,16 @@
-const btnSettingsDashboard: HTMLElement = document.querySelector('.btn_settings--dashboard');
-const settingsDashboard: HTMLElement = document.querySelector('.settings__block');
-const okBtnDashboard: HTMLElement = document.querySelector('.btn__settings');
+// const btnSettingsDashboard: HTMLElement = document.querySelector('.btn_settings--dashboard');
+// const settingsDashboard: HTMLElement = document.querySelector('.settings__block');
+
 const countries: HTMLElement = document.querySelector('.countries');
 const map: HTMLElement = document.querySelector('.map');
 const dashboard: HTMLElement = document.querySelector('.dashboard');
 const chart: HTMLElement = document.querySelector('.chart');
 const piechart: HTMLElement = document.querySelector('.piechart');
 const btnsFullScreen: NodeListOf<Element> = document.querySelectorAll('.fa-expand');
+const btnsSettings: NodeListOf<Element> = document.querySelectorAll('.fa-sliders-h');
+const okBtns: NodeListOf<Element> = document.querySelectorAll('.btn__settings');
+const settingsBlocks: NodeListOf<Element> = document.querySelectorAll('.settings__block');
+
 const contentBlocks: Array<string> = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
 let openFullScreen: boolean = false;
 
@@ -56,13 +60,20 @@ function showContentBlocks(): void {
 }
 
 (function (): void {
-  btnSettingsDashboard.addEventListener('click', () => {
-    settingsDashboard.classList.remove('hide');
+  okBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      settingsBlocks.forEach((block) => {
+        block.classList.add('hide');
+        // ПЕРЕРИСОВКА ВСЕГО
+      });
+    });
   });
 
-  okBtnDashboard.addEventListener('click', () => {
-    // ПЕРЕРИСОВКА ВСЕГО
-    settingsDashboard.classList.add('hide');
+  btnsSettings.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const temp: string = btn.classList[0].replace('btn_settings--', '');
+      document.querySelector(`.settings__${temp}`).classList.remove('hide');
+    });
   });
 
   btnsFullScreen.forEach((btn) => {

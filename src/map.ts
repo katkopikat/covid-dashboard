@@ -16,6 +16,6 @@ export default class Map implements IUpdate {
   }
 
   example() {
-    this.raiseEvent(Events.UPDATE, { country: 'Global', lastDay: true, per100K: false });
+    this.raiseEvent(Events.UPDATE, { country: 'GLOBAL', dataType: DataTypes.RECOVERED, lastDay: true, per100K: false });
   }
 }
