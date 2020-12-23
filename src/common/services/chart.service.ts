@@ -1,0 +1,57 @@
+// const chartService = async function () {
+//   const data = await fetch('https://disease.sh/v3/covid-19/historical/Belarus?lastdays=all')
+//   return data.json();
+// }
+
+
+import {ICovidData} from "../models/map.model";
+import {IGlobalData} from "../models/chart.model";
+
+export default class ChartService {
+  private endpoints: { [k: string]: string };
+  constructor() {
+    this.endpoints = {
+      countries: 'https://disease.sh/v3/covid-19/countries',
+      global: 'https://disease.sh/v3/covid-19/historical/all?lastdays=all',
+      globalPopulation: 'https://disease.sh/v3/covid-19/all',
+    };
+  }
+
+  async getCountryData() {
+    const response = await fetch(this.endpoints.countries);
+
+    const data: ICovidData[] = await response.json();
+    return data
+  }
+
+  async getGlobalData() {
+    const response = await fetch(this.endpoints.global);
+
+    const data: IGlobalData = await response.json();
+
+    return data;
+  }
+
+  async getGlobalLastDaysData() {
+    const response = await fetch(this.endpoints.globalPopulation).then((res) => res.json());
+
+    return {
+      population: response.population,
+      todayDeaths: {'Dec': response.todayDeaths},
+      todayCases: {'Dec': response.todayCases},
+      todayRecovered: {'Dec': response.todayRecovered},
+    };
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
