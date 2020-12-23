@@ -10,6 +10,7 @@ const btnsFullScreen: NodeListOf<Element> = document.querySelectorAll('.fa-expan
 const btnsSettings: NodeListOf<Element> = document.querySelectorAll('.fa-sliders-h');
 const okBtns: NodeListOf<Element> = document.querySelectorAll('.btn__settings');
 const settingsBlocks: NodeListOf<Element> = document.querySelectorAll('.settings__block');
+const wrapper: HTMLElement = document.querySelector('.wrapper--main');
 
 const contentBlocks: Array<string> = ['countries', 'map', 'dashboard', 'chart', 'piechart'];
 let openFullScreen: boolean = false;
@@ -37,6 +38,7 @@ btnsFullScreen.forEach((btn) => {
     if (!openFullScreen) {
       openFullScreen = true;
       hideContentBlocks();
+      wrapper.classList.add('wrapper__fullscreen');
       if (btn.classList.contains('btn_fullscreen--countries')) {
         countriesFullScreen();
       }
@@ -54,7 +56,9 @@ btnsFullScreen.forEach((btn) => {
       }
     } else {
       openFullScreen = false;
+      wrapper.classList.remove('wrapper__fullscreen');
       showContentBlocks();
+      dashboardRemoveFullScreen();
     }
   });
 });
@@ -73,13 +77,23 @@ function mapFullScreen(): void {
 function dashboardFullScreen(): void {
   dashboard.classList.remove('hide');
   dashboard.classList.add('fullscreen');
-  document.querySelectorAll('.heading__section').forEach((el) => {
+  dashboard.querySelectorAll('.heading__section').forEach((el) => {
     el.classList.add('heading__section--full');
   });
-  document.querySelectorAll('.dashboard__number').forEach((el) => {
+  dashboard.querySelectorAll('.dashboard__number').forEach((el) => {
     el.classList.add('dashboard__number--full');
   });
 }
+
+  function dashboardRemoveFullScreen(): void {
+    dashboard.classList.remove('fullscreen');
+    dashboard.querySelectorAll('.heading__section').forEach((el) => {
+      el.classList.remove('heading__section--full');
+    });
+    dashboard.querySelectorAll('.dashboard__number').forEach((el) => {
+      el.classList.remove('dashboard__number--full');
+    });
+  }
 
 function chartFullScreen(): void {
   chart.classList.remove('hide');
@@ -105,40 +119,3 @@ function showContentBlocks(): void {
   document.querySelector('.fullscreen').classList.remove('fullscreen');
 }
 
-// (function (): void {
-//   btnSettingsDashboard.addEventListener('click', () => {
-//     settingsDashboard.classList.remove('hide');
-//   });
-
-//   okBtnDashboard.addEventListener('click', () => {
-//     // ПЕРЕРИСОВКА ВСЕГО
-//     settingsDashboard.classList.add('hide');
-//   });
-
-//   btnsFullScreen.forEach((btn) => {
-//     btn.addEventListener('click', () => {
-//       if (!openFullScreen) {
-//         openFullScreen = true;
-//         hideContentBlocks();
-//         if (btn.classList.contains('btn_fullscreen--countries')) {
-//           countriesFullScreen();
-//         }
-//         if (btn.classList.contains('btn_fullscreen--dashboard')) {
-//           dashboardFullScreen();
-//         }
-//         if (btn.classList.contains('btn_fullscreen--map')) {
-//           mapFullScreen();
-//         }
-//         if (btn.classList.contains('btn_fullscreen--chart')) {
-//           chartFullScreen();
-//         }
-//         if (btn.classList.contains('btn_fullscreen--piechart')) {
-//           piechartFullScreen();
-//         }
-//       } else {
-//         openFullScreen = false;
-//         showContentBlocks();
-//       }
-//     });
-//   });
-// }());
