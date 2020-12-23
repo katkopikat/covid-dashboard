@@ -275,7 +275,7 @@ margin-top: -4.1rem;
   position: absolute;
   left: 0;
   padding: 1rem;
-  background: $dark-gray;
+  background: $bg-block;
   border-radius: 1rem;
 }
 
@@ -413,6 +413,25 @@ input[type="radio"]:checked + .rdo {
     }
 }
 
+.loader{
+  display: none;
+  height: 260px;
+  width: 210px;
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  padding: 1rem;
+  background: $bg-block;
+  border-radius: 1rem;
+}
+
+.loader__dashboard{
+
+}
+.loader--active{
+  display: flex;
+}
+
 @media (max-width: 1280px){
   .wrapper__width {
     max-width: 768px;
@@ -455,7 +474,8 @@ input[type="radio"]:checked + .rdo {
   padding-top: 0;
 }
 
-.settings__dashboard {
+.settings__dashboard,
+.loader__dashboard {
   height: 350px;
   width: 210px;
   margin-bottom: -1rem;
@@ -577,7 +597,8 @@ input[type="radio"]:checked + .rdo {
     padding-top: 1rem;
   }
 
-  .settings__dashboard {
+  .settings__dashboard,
+  .loader__dashboard {
     height: 235px;
     width: 235px;
     padding-top: 0.6rem;

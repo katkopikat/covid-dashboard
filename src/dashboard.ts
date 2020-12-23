@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-cycle,object-curly-newline
 import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
-
 export default class Dashboard implements IUpdate {
   private readonly root: HTMLElement;
   private readonly raiseEvent;
@@ -13,7 +12,7 @@ export default class Dashboard implements IUpdate {
     this.raiseEvent = eventFunction;
     this.root = document.querySelector('.dashboard');
     this.dataSettings = {
-      country: 'Global',
+      country: 'GLOBAL',
       dataType: DataTypes.CASES,
       lastDay: false,
       per100k: false,
@@ -29,7 +28,6 @@ export default class Dashboard implements IUpdate {
     this.updateParamsDisplay(this.dataSettings);
     this.renderDashboard();
   }
-
 
   updateParamsDisplay(p: Params): void {
     const settingsEl : HTMLElement = document.querySelector('.settings__dashboard');
@@ -75,14 +73,17 @@ export default class Dashboard implements IUpdate {
   }
 
   static getLink(country: string): string {
-    const link: string = country === 'Global' ? 'all' : `countries/${country}`;
+    const link: string = country === 'GLOBAL' ? 'all' : `countries/${country}`;
     const url: string = `https://disease.sh/v3/covid-19/${link}`;
     return url;
   }
 
   private async getData(request: RequestInfo): Promise<any> {
+    const loader: HTMLElement = this.root.querySelector('.loader')
+    loader.classList.add('loader--active');
     const response = await fetch(request);
     const dataObj = await response.json();
+    loader.classList.remove('loader--active');
     this.country = { ...dataObj };
     return dataObj;
   }
@@ -90,7 +91,7 @@ export default class Dashboard implements IUpdate {
   private calcPerPopulation(param: string): string {
     const { population } = this.country;
     const dataNumb = parseInt(param, 10);
-    const numb: number = Math.ceil((dataNumb / population) * 100000);
+    const numb: number = ((dataNumb / population) * 100000).toFixed(3);
     return Dashboard.formatNumber(numb);
   }
 
@@ -98,7 +99,7 @@ export default class Dashboard implements IUpdate {
     const countryCases: HTMLElement = this.root.querySelector('.heading__section--cases');
     const countryRecovered: HTMLElement = this.root.querySelector('.heading__section--recovery');
     const countryDeath: HTMLElement = this.root.querySelector('.heading__section--death');
-    if (this.dataSettings.country === 'Global') {
+    if (this.dataSettings.country === 'GLOBAL') {
       countryCases.textContent = 'Global Cases';
       countryRecovered.textContent = 'Global Recovered';
       countryDeath.textContent = 'Global Deaths';
