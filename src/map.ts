@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-cycle,object-curly-newline
 import Leaflet from 'leaflet';
+import Chart from 'chart.js';
 import {
   EventFunc, Params, Events, IUpdate, DataTypes,
 } from './dispatch';
@@ -25,7 +26,6 @@ import {
 } from './common/helpers/map.helpers';
 import { DataKey } from './common/models/common.model';
 import MapService from './common/services/map.service';
-import Chart from 'chart.js';
 
 export default class Map implements IUpdate {
   private readonly root: HTMLElement;
@@ -460,6 +460,8 @@ export default class Map implements IUpdate {
       },
       options: {
         responsive: false,
+
+        cutoutPercentage: 80,
         legend: {
           display: false,
         },
