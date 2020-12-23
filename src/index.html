@@ -10,13 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Gudea&display=swap" rel="stylesheet">
   <title>COVID-2019 Dashboard</title>
 </head>
-<body>
+<body style="background-color: #191A1A;">
   <div class="main__content">
     <div class="wrapper__width">
       <header class="header">
       <h1 class="header__heading">COVID-19 |
         <span class="header__heading--dashboard">Dashboard</span>
-        <span class="header__heading--country">for Germany</span>
+        <span class="header__heading--country"></span>
         <span class="header__heading--country_flag"></span>
       </h1>
         <span class="wrapper__update_time">
@@ -119,7 +119,7 @@
           <button class="btn__settings">OK</button>
         </div>
       </section>
-      <div class="wrapper_dashboard_chart">
+        <div class="wrapper_dashboard">
       <section class="dashboard content__block">
         <div class="settings__block settings__dashboard hide">
           <h3 class="settings__heading">Settings </h3>
@@ -142,26 +142,46 @@
 
           <button class="btn__settings">OK</button>
         </div>
+        <div class="loader loader__dashboard">
+          <div class="loader_wrapper">
+          <div class="wBall" id="wBall_1">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_2">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_3">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_4">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_5">
+            <div class="wInnerBall"></div>
+          </div>
+        </div>
+        </div>
         <div class="settings__icons">
           <i class="btn_settings--dashboard fas fa-sliders-h"></i>
           <i class="btn_fullscreen--dashboard fas fa-expand"></i>
         </div>
-          <span class="dashboard-data dashboard--cases">
-            <h2 class="heading__section">Global Cases</h2>
-            <span class="dashboard__number dashboard__number--cases">54 456 597</span>
-          </span>
-          <span class="dashboard-data dashboard--recovery">
-            <h2 class="heading__section">Global Recovered</h2>
-            <span class="dashboard__number dashboard__number--recovered">46 538 511</span>
-          </span>
-          <span class="dashboard-data dashboard--death">
-            <h2 class="heading__section">Global Death</h2>
-            <span class="dashboard__number dashboard__number--death">1 456 597</span>
-          </span>
+        <span class="dashboard-data dashboard--cases">
+          <h2 class="heading__section heading__section--cases">Global Cases</h2>
+          <span class="dashboard__number dashboard__number--cases">-- -- --</span>
+        </span>
+        <span class="dashboard-data dashboard--recovery">
+          <h2 class="heading__section heading__section--recovery"></h2>
+          <span class="dashboard__number dashboard__number--recovered">-- -- --</span>
+        </span>
+        <span class="dashboard-data dashboard--death">
+          <h2 class="heading__section heading__section--death">Global Death</h2>
+          <span class="dashboard__number dashboard__number--death">-- -- --</span>
+        </span>
       </section>
       <section class="piechart content__block">
         <div class="piechart__wrapper"></div>
       </section>
+      </div>
       <section class="chart content__block" >
         <div class="settings__icons">
           <i class="btn_settings--chart fas fa-sliders-h"></i>
@@ -178,7 +198,7 @@
             <span class="btn__period period--day">on the day</span>
           </div>
           <div class="settings__numeric">
-            <h4 class="settings__subheading">Numeric display: </h4>
+            <h4 class="settings__subheading">Numeric: </h4>
             <form action="#">
               <input type="checkbox" name="numeric" value="absolite">
             </form>
@@ -213,42 +233,6 @@
           <div class="chart__wrapper">
           </div>
       </section>
-    </div>
-
-    <section class="chart chart--device content__block" >
-      <div class="settings__icons">
-        <i class="btn_settings--chart fas fa-sliders-h"></i>
-        <i class="btn_fullscreen--chart fas fa-expand"></i>
-      </div>
-      <div class="settings__block settings__chart hide">
-        <h3 class="settings__heading">Settings </h3>
-        <div class="settings__period">
-          <h4 class="settings__subheading">Period: </h4>
-          <form action="#">
-          <input type="checkbox" name="period" value="alltime">
-        </form>
-          <span class="btn__period period--alltime">of all time</span>
-          <span class="btn__period period--day">on the day</span>
-        </div>
-        <div class="settings__numeric">
-          <h4 class="settings__subheading">Numeric display: </h4>
-          <form action="#">
-            <input type="checkbox" name="numeric" value="absolite">
-          </form>
-          <span class="btn__numeric numeric--absolute">absolute</span>
-         <span class="btn__numeric numeric---population">per 100k people</span>
-        </div>
-        <button class="btn__settings">OK</button>
-      </div>
-        <h2 class="heading__section ">
-          <span class="chart__toggle-mode chart_mode-global mode_active"> Global Cases </span> |
-          <span class="chart__toggle-mode chart_mode--recovered"> Recovered</span> |
-          <span class="chart__toggle-mode chart_mode--death"> Death </span>
-        </h2>
-        <div class="chart__wrapper">
-        </div>
-    </section>
-
   </div>
   </div>
     <footer class="footer">
