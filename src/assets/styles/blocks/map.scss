@@ -115,7 +115,7 @@ $border-radius: 1rem;
   outline: none;
   border: none;
   border-left: 1px solid rgb(64, 64, 64);
-  border-right: 1px solid rgb(64, 64, 64);
+  border-top: 1px solid rgb(64, 64, 64);
   border-bottom: 1px solid rgb(64, 64, 64);
 
   & .fas {
@@ -124,7 +124,7 @@ $border-radius: 1rem;
   }
 
   &:nth-of-type(1) {
-    border-top: 1px solid rgb(64, 64, 64);
+    border-right: 1px solid rgb(64, 64, 64);
   }
 
   &:disabled {

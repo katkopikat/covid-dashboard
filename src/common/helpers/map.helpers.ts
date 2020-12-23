@@ -73,9 +73,12 @@ const generateScale = (
 
 const getScaleWithWeight = (scale: IMapLegendItem[]) => {
   const scaleWithWeight = [...scale.slice().reverse()];
+  const maxItemsCount = 9;
+  const addition: number = scale.length >= maxItemsCount
+    ? 1 : Math.floor(maxItemsCount / scale.length);
   return scaleWithWeight.map((item: IMapLegendItem, index: number) => ({
     ...item,
-    markerWeight: index + 1,
+    markerWeight: (index + 1) * addition,
   }));
 };
 
@@ -111,7 +114,6 @@ const getDataForHeatMap = (
 
   const scale = generateScale(copyData.slice(-1)[0][currentKey], currentKey);
   const scaleWithWeight = getScaleWithWeight(scale);
-  console.log(scaleWithWeight);
 
   const data = copyData.map((item: ICovidData) => ({
     ...item,
@@ -210,7 +212,7 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
         <header class="map-tooltip__header"/>
             <h3 class="map-tooltip__title">${countryName}</h3>
           </header>
-          <p class="map-tooltip__description">${currentKey}: <b>N/A</b></p>
+          <p class="map-tooltip__description">${currentKey}: <b>-- -- --</b></p>
         </div>`;
   }
   return template;

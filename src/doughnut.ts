@@ -1,6 +1,6 @@
 import Chart from 'chart.js';
 import { convertDataToRelative } from './common/helpers/map.helpers';
-import { DataKey } from './common/models/common.model';
+import { DataKey, GLOBAL } from './common/models/common.model';
 import { ICovidData, ICovidGlobalData } from './common/models/map.model';
 import DoughnutService from './common/services/doughnut.service';
 // eslint-disable-next-line import/no-cycle
@@ -20,7 +20,7 @@ export default class Doughnut implements IUpdate {
     this.raiseEvent = eventFunction;
     this.root = document.querySelector('.piechart');
     this.dataSettings = {
-      country: 'Global',
+      country: GLOBAL,
       dataType: DataTypes.CASES,
       lastDay: false,
       per100k: false,
@@ -34,7 +34,7 @@ export default class Doughnut implements IUpdate {
 
   update(params: Params): void {
     this.dataSettings = params;
-    if (this.dataSettings.country !== 'global') {
+    if (this.dataSettings.country !== GLOBAL) {
       if (!this.countriesData) {
         this.dataService.getCountriesData().then((data: ICovidData[]) => {
           this.countriesData = data;
