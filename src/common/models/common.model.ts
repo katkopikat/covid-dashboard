@@ -23,3 +23,5 @@ export interface IRiseEvent {
 export interface IUpdating {
   update(options: IDispatchArgument, callback: IRiseEvent): void;
 }
+
+export const GLOBAL = 'GLOBAL';
