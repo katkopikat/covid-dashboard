@@ -5,7 +5,7 @@ export default class Dashboard implements IUpdate {
   private readonly raiseEvent;
   private dataSettings: Params;
   private endpointsLink: string;
-  private country;
+  private country: any;
   private openFullScreen: boolean;
   /* eslint-disable linebreak-style */
   constructor(eventFunction: EventFunc) {
@@ -79,11 +79,11 @@ export default class Dashboard implements IUpdate {
   }
 
   private async getData(request: RequestInfo): Promise<any> {
-    const loader: HTMLElement = this.root.querySelector('.loader')
-    loader.classList.add('loader--active');
+    // const loader: HTMLElement = this.root.querySelector('.loader')
+    // loader.classList.add('loader--active');
     const response = await fetch(request);
     const dataObj = await response.json();
-    loader.classList.remove('loader--active');
+    // loader.classList.remove('loader--active');
     this.country = { ...dataObj };
     return dataObj;
   }
@@ -91,7 +91,7 @@ export default class Dashboard implements IUpdate {
   private calcPerPopulation(param: string): string {
     const { population } = this.country;
     const dataNumb = parseInt(param, 10);
-    const numb: number = ((dataNumb / population) * 100000).toFixed(3);
+    const numb: any = ((dataNumb / population) * 100000).toFixed(2);
     return Dashboard.formatNumber(numb);
   }
 
@@ -99,7 +99,7 @@ export default class Dashboard implements IUpdate {
     const countryCases: HTMLElement = this.root.querySelector('.heading__section--cases');
     const countryRecovered: HTMLElement = this.root.querySelector('.heading__section--recovery');
     const countryDeath: HTMLElement = this.root.querySelector('.heading__section--death');
-    if (this.dataSettings.country === 'GLOBAL' || this.dataSettings.country === 'G') {
+    if (this.dataSettings.country === 'GLOBAL' || this.dataSettings.country === 'Global') {
       countryCases.textContent = 'Global Cases';
       countryRecovered.textContent = 'Global Recovered';
       countryDeath.textContent = 'Global Deaths';
