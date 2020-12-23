@@ -36,10 +36,11 @@ export default class ChartService {
     const response = await fetch(this.endpoints.globalPopulation).then((res) => res.json());
 
     return {
+      date: response.updated,
       population: response.population,
-      todayDeaths: {'Dec': response.todayDeaths},
-      todayCases: {'Dec': response.todayCases},
-      todayRecovered: {'Dec': response.todayRecovered},
+      todayDeaths: {month: response.todayDeaths},
+      todayCases: {month: response.todayCases},
+      todayRecovered: {month: response.todayRecovered},
     };
   }
 }

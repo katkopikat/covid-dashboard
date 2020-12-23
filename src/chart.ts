@@ -36,6 +36,7 @@ const labels = {
 };
 
 export interface ResponseEbywii {
+  date?: number;
   timeline?: {
     cases: Map<string , number>,
     deaths: Map<string , number>,
@@ -57,7 +58,9 @@ export default class Chart {
   private countriesDataSet: ICovidData;
   private population: number;
   private currentDataSet: object;
-  private lastDaysData: ResponseEbywii
+  private lastDaysData: ResponseEbywii;
+  private lastChart: any;
+  private lastData: any;
 
 
   constructor(eventFunction: EventFunc) {
@@ -74,9 +77,10 @@ export default class Chart {
       this.mapService.getCountryData().then((countriesData) => {
         this.mapService.getGlobalLastDaysData().then((data) => {
           this.population = data.population;
-          this.lastDaysData = {cases: data.todayCases, deaths: data.todayDeaths, recovered: data.todayRecovered}
+          this.lastDaysData = {cases: data.todayCases, deaths: data.todayDeaths, recovered: data.todayRecovered, date: data.date}
           this.countriesDataSet = countriesData;
           this.dataSet = globalData;
+          this.lastData = globalData;
           this.init()
         })
       })
@@ -159,8 +163,9 @@ export default class Chart {
         }
       }
     })
+    this.lastChart = this.chart.config;
 
-    this.addSettingsListeners()
+      this.addSettingsListeners()
   }
 
   init() {
@@ -217,6 +222,8 @@ export default class Chart {
 
   renderLastDayBar() {
     if (this.dataSettings.lastDay) {
+      this.lastChart = this.chart.config;
+      this.lastData = this.dataSet;
       this.chart.destroy();
       this.dataSet = {...this.lastDaysData};
       this.chart = new _Chart(this.chartElement, {
@@ -231,17 +238,36 @@ export default class Chart {
           ],
         },
         options: {
+          tooltips: {
+            callbacks: {
+              title: () => {
+                return new Date(this.dataSet.date)
+              }
+            }
+          },
           responsive: true,
           legend: {
             display: false
+          },
+          scales: {
+            xAxes: [{
+              ticks: {
+                userCallback: (item, index, values) => {
+                  return new Date(this.dataSet.date).toLocaleString('default', { month: 'long' });
+                },
+              }
+            }],
           }
         }
       })
+    } else {
+      this.chart.destroy();
+      this.dataSet = this.lastData
+      this.chart = new _Chart(this.chartElement, this.lastChart);
     }
   }
 
   update(params: Params) {
-    console.log(this.dataSet)
     this.dataSettings = params;
     this.renderLastDayBar();
     this.renderColorOfDataType();

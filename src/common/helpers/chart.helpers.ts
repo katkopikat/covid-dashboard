@@ -5,7 +5,6 @@ const generatePer100KData = (dataSet, population) => {
   keys.forEach((key) => {
     dataSet[key] = Math.ceil(((dataSet[key] / population) * 100000));
   })
-  console.log(dataSet)
   return Object.values(dataSet)
 }
 
