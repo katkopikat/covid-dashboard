@@ -103,6 +103,7 @@ export default class Countries implements IUpdate {
       el.checked = i as DataTypes === p.dataType;
     });
     this.currentCountry = this.data.find((el) => el.countryInfo.iso3 === p.country).country;
+    this.updateCountry(this.currentCountry);
   }
 
   update(pars: Params): void {
