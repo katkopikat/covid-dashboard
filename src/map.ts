@@ -37,6 +37,7 @@ export default class Map implements IUpdate {
   private layer = null;
   private countriesLayer;
   private markersLayers;
+  private pointToCurrentFly;
   private maxZoom = 7;
   private minZoom = 1;
   private mapOptions: IMapOptions = {
@@ -58,6 +59,8 @@ export default class Map implements IUpdate {
   private mapService: MapService;
   private dataSettings: Params;
   private countryFlyInZoom = 4;
+  private removingTimeout: ReturnType<typeof setTimeout>;
+  private fly_by_click = false;
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
@@ -84,6 +87,9 @@ export default class Map implements IUpdate {
       const country: ICovidData = this.getCountryById(this.dataSettings.country);
       if (country) {
         this.goToCountry([country.countryInfo.long, country.countryInfo.lat]);
+      }
+      if (this.dataSettings.country === GLOBAL) {
+        this.goToCountry(this.mapOptions.center);
       }
     }
   }
@@ -359,6 +365,7 @@ export default class Map implements IUpdate {
 
         if (this.countryCodeToGo !== newCountryCodeToGo) {
           const newSettings: Params = { ...this.dataSettings, country: newCountryCodeToGo };
+          this.fly_by_click = true;
           this.postSettings(newSettings);
         }
       },
@@ -416,9 +423,42 @@ export default class Map implements IUpdate {
   }
 
   private goToCountry(countryCoords: number[]) {
-    this.mapElement.flyTo(countryCoords.reverse());
+    this.mapElement.flyTo(countryCoords.slice().reverse());
+
+    if (this.removingTimeout) {
+      clearTimeout(this.removingTimeout);
+      this.removingTimeout = null;
+    }
+    if (this.pointToCurrentFly) {
+      this.mapElement.removeLayer(this.pointToCurrentFly);
+    }
+    if (!this.fly_by_click) {
+      setTimeout(() => {
+        this.addPoint(countryCoords.slice().reverse());
+      }, 500);
+    }
+    this.fly_by_click = false;
     this.zoomInButton.disabled = false;
     this.zoomOutButton.disabled = false;
+  }
+
+  private addPoint(countryCoords: number[]) {
+    const html = `
+    <span class="fly-to-marker"></span>
+  `;
+    this.pointToCurrentFly = Leaflet.marker(countryCoords, {
+      icon: Leaflet.divIcon({
+        className: 'icon',
+        html,
+      }),
+      riseOnHover: true,
+    });
+
+    this.pointToCurrentFly.addTo(this.mapElement);
+
+    this.removingTimeout = setTimeout(() => {
+      this.mapElement.removeLayer(this.pointToCurrentFly);
+    }, 3000);
   }
 
   private getCountryById(id: string): ICovidData {
