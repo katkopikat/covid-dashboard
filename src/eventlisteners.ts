@@ -47,12 +47,10 @@ let openFullScreen: boolean = false;
         if (btn.classList.contains('btn_fullscreen--chart')) {
           chartFullScreen();
         }
-        if (btn.classList.contains('btn_fullscreen--piechart')) {
-          piechartFullScreen();
-        }
       } else {
         openFullScreen = false;
         wrapper.classList.remove('wrapper__fullscreen');
+        document.querySelector('.set_fs').classList.remove('set_fs');
         showContentBlocks();
         dashboardRemoveFullScreen();
       }
@@ -64,16 +62,19 @@ let openFullScreen: boolean = false;
 function countriesFullScreen(): void {
   countries.classList.remove('hide');
   countries.classList.add('fullscreen');
+  countries.querySelector('.settings__countries').classList.add('set_fs');
 }
 
 function mapFullScreen(): void {
   map.classList.remove('hide');
   map.classList.add('fullscreen');
+  map.querySelector('.settings__map').classList.add('set_fs');
 }
 
 function dashboardFullScreen(): void {
   dashboard.classList.remove('hide');
   dashboard.classList.add('fullscreen');
+  dashboard.querySelector('.settings__dashboard').classList.add('set_fs');
   dashboard.querySelectorAll('.heading__section').forEach((el) => {
     el.classList.add('heading__section--full');
   });
@@ -95,11 +96,7 @@ function dashboardRemoveFullScreen(): void {
 function chartFullScreen(): void {
   chart.classList.remove('hide');
   chart.classList.add('fullscreen');
-}
-
-function piechartFullScreen(): void {
-  piechart.classList.remove('hide');
-  piechart.classList.add('fullscreen');
+  chart.querySelector('.settings__chart').classList.add('set_fs');
 }
 
 function hideContentBlocks(): void {

@@ -42,6 +42,7 @@ body {
   margin: 0 auto;
 }
 
+
 .wrapper--main {
   // display: flex;
   // align-items: center;
@@ -51,6 +52,10 @@ body {
   justify-content: space-between;
   height: 566px;
 }
+
+// .main__wrapper{
+//   height: calc(100vh - 160px);;
+//   }
 
 .header {
   height: 75px;
@@ -80,8 +85,8 @@ body {
 }
 
 .chart {
-  width: 445px;
-  height: 280px;
+  width: 436px;
+  height: 274px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -141,6 +146,11 @@ body {
 .settings__chart>.btn__settings {
   margin-left: 30px;
   margin-top: 15px;
+}
+
+.chart > .heading__section{
+  margin-top: -1.5rem;
+  margin-bottom: 1rem;
 }
 
 .fullscreen {
@@ -611,6 +621,11 @@ input[type="radio"]:checked+.rdo {
   .wrapper__fullscreen {
     height: calc(100vh - 170px);
   }
+}
+
+.set_fs{
+  height: calc(100vh - 160px);
+  width: 100vw;
 }
 
 @media (max-width: 768px) {

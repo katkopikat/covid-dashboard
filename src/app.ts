@@ -8,8 +8,9 @@ import './assets/images/favicon.png';
 import './eventlisteners';
 import './keyboard';
 
-alert('Уважаемый проверяющий, подожди, плиз, хотя бы денёк: мой напарник борется с API и графиком!')
 window.onload = () => {
   const covid = new Dispatch();
   covid.start();
 };
+
+alert('Уважаемый проверяющий, подожди, плиз, хотя бы денёк: мой напарник борется с API и графиком!')
