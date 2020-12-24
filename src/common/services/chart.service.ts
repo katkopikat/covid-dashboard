@@ -3,14 +3,13 @@
 //   return data.json();
 // }
 
-
-import {ICovidData} from "../models/map.model";
+import { ICovidData } from '../models/map.model';
 
 export default class ChartService {
   private endpoints: { [k: string]: string };
   constructor() {
     this.endpoints = {
-      countries: 'https://disease.sh/v3/covid-19/countries?yesterday=true',
+      countries: 'https://disease.sh/v3/covid-19/countries',
       global: 'https://disease.sh/v3/covid-19/historical/all?lastdays=all',
       globalPopulation: 'https://disease.sh/v3/covid-19/all',
     };
@@ -20,7 +19,7 @@ export default class ChartService {
     const response = await fetch(this.endpoints.countries);
 
     const data: ICovidData[] = await response.json();
-    return data
+    return data;
   }
 
   async getHistoricalCountryData(iso3) {
@@ -45,9 +44,9 @@ export default class ChartService {
     return {
       date: response.updated,
       population: response.population,
-      todayDeaths: {month: response.todayDeaths},
-      todayCases: {month: response.todayCases},
-      todayRecovered: {month: response.todayRecovered},
+      todayDeaths: { month: response.todayDeaths },
+      todayCases: { month: response.todayCases },
+      todayRecovered: { month: response.todayRecovered },
     };
   }
 
@@ -55,19 +54,6 @@ export default class ChartService {
     const globalData = await this.getGlobalData();
     const globalLastDaysData = await this.getGlobalLastDaysData();
 
-    return [globalData,globalLastDaysData];
+    return [globalData, globalLastDaysData];
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
