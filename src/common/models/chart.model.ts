@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export interface IGlobalData {
   cases: Map<string, number>,
   deaths: Map<string, number>,
@@ -7,3 +8,6 @@ export interface IGlobalData {
 export interface IGlobalPopulationData {
   population: number,
 }
+=======
+
+>>>>>>> develop

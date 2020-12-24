@@ -211,17 +211,17 @@
           <div class="settings__radio">
             <h4 class="settings__subheading">Data: </h4>
             <label for="chart_cases">
-              <input type="radio" id="chart_cases" name="radio" checked>
+              <input type="radio" id="chart_cases" name="radio" value="cases" checked>
               <span class="rdo"></span>
               <span>cases</span>
             </label>
             <label for="chart_recovered">
-              <input type="radio" id="chart_recovered" name="radio">
+              <input type="radio" id="chart_recovered" name="radio" value="recovered">
               <span class="rdo"></span>
               <span>recovered</span>
             </label>
               <label for="chart_deaths">
-              <input type="radio" id="chart_deaths" name="radio">
+              <input type="radio" id="chart_deaths" name="radio" value="deaths">
               <span class="rdo"></span>
               <span>deaths</span>
             </label>
@@ -229,9 +229,9 @@
           <button class="btn__settings">OK</button>
         </div>
           <h2 class="heading__section ">
-            <span class="chart__toggle-mode chart_mode-global mode_active"> Global Cases </span> |
-            <span class="chart__toggle-mode chart_mode--recovered"> Recovered</span> |
-            <span class="chart__toggle-mode chart_mode--death"> Death </span>
+            <span class="chart__toggle-mode chart_mode-global mode_active chart-mode-cases">Cases</span> |
+            <span class="chart__toggle-mode chart_mode--recovered">Recovered</span> |
+            <span class="chart__toggle-mode chart_mode--death">Deaths</span>
           </h2>
           <div class="chart__wrapper">
           </div>
