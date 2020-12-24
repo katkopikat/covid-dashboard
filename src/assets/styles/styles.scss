@@ -9,14 +9,13 @@ $dark-gray: #171717;
 $very-dark-gray: #111;
 $footer-bg: #1D1D1D;
 $icon-color: #2b2b2b;
-$font: Roboto,
-sans-serif;
-$heading-font:'Gudea',
-sans-serif;
+$font: Roboto, sans-serif;
+$heading-font:'Gudea', sans-serif;
 
 @import '../../../node_modules/leaflet/dist/leaflet.css';
 @import './blocks/map.scss';
 @import './blocks/doughnut.scss';
+@import './blocks/keyboard';
 
 * {
   margin: 0;
