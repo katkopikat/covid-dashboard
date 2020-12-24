@@ -3,7 +3,7 @@ import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 import './assets/styles/chart.scss'
 import ChartService from "./common/services/chart.service";
 import {ICovidData} from "./common/models/map.model";
-import {generatePer100KData} from "./common/helpers/chart.helpers";
+import {generateCountryData, generatePer100KData} from "./common/helpers/chart.helpers";
 
 const mapping: Map<number, string> = new Map([
   [1, 'Jan'],
@@ -37,14 +37,9 @@ const labels = {
 
 export interface ResponseEbywii {
   date?: number;
-  timeline?: {
-    cases: Map<string , number>,
-    deaths: Map<string , number>,
-    recovered: Map<string , number>,
-  }
-  cases?: Map<string , number>,
-  deaths?: Map<string , number>,
-  recovered?: Map<string , number>,
+  cases?: any
+  deaths?: any
+  recovered?: any
 }
 
 export default class Chart {
@@ -61,12 +56,13 @@ export default class Chart {
   private lastDaysData: ResponseEbywii;
   private lastChart: any;
   private lastData: any;
+  private typeOfChart: string;
 
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
     this.dataSettings = {
-      country: 'Global',
+      country: 'GLOBAL',
       dataType: DataTypes.CASES,
       lastDay: false,
       per100k: false,
@@ -100,7 +96,7 @@ export default class Chart {
         datasets: [
           {
             data: Object.values(this.currentDataSet),
-            backgroundColor: '#D10F49',
+            backgroundColor: '#1D6DEC',
             fill: false,
           }
         ],
@@ -174,20 +170,18 @@ export default class Chart {
     }
   }
 
-//this.chart.data.datasets[0].data
-//  country: 'Global',
-//       dataType: DataTypes.CASES,
-//       lastDay: false,
-//       per100k: false,
 
-  renderColorOfDataType() {
-    switch (this.dataSettings.dataType) {
+  renderColorOfDataType(params) {
+    console.log('renderColor')
+    switch (params.dataType) {
       case DataTypes.CASES: {
         this.chart.data = {
-          labels:Object.keys(this.dataSet.cases),
+          labels: this.dataSettings.lastDay?
+            Object.keys(this.lastDaysData.cases) : Object.keys(this.dataSet.cases),
           datasets: [{
-            data: Object.values(this.dataSet.cases),
-            backgroundColor: '#AA213A',
+            data: this.dataSettings.lastDay?
+              Object.values(this.lastDaysData.cases): Object.values(this.dataSet.cases),
+            backgroundColor: '#1D6DEC',
             fill: false
         }]}
         this.currentDataSet = this.dataSet.cases
@@ -196,10 +190,12 @@ export default class Chart {
       }
       case DataTypes.DEATH: {
         this.chart.data = {
-          labels:Object.keys(this.dataSet.deaths),
+          labels: this.dataSettings.lastDay?
+            Object.keys(this.lastDaysData.deaths) : Object.keys(this.dataSet.deaths),
           datasets: [{
-            data: Object.values(this.dataSet.deaths),
-            backgroundColor: '#1D6DEC',
+            data: this.dataSettings.lastDay?
+              Object.values(this.lastDaysData.deaths): Object.values(this.dataSet.deaths),
+            backgroundColor: '#AA213A',
             fill: false
           }]}
         this.currentDataSet = this.dataSet.deaths
@@ -208,9 +204,11 @@ export default class Chart {
       }
       default: {
         this.chart.data = {
-          labels: Object.keys(this.dataSet.recovered),
+          labels: this.dataSettings.lastDay?
+            Object.keys(this.lastDaysData.recovered) : Object.keys(this.dataSet.recovered),
           datasets: [{
-            data: Object.values(this.dataSet.recovered),
+            data: this.dataSettings.lastDay?
+              Object.values(this.lastDaysData.recovered): Object.values(this.dataSet.recovered),
             backgroundColor: '#3BCC92',
             fill: false
           }]}
@@ -218,10 +216,17 @@ export default class Chart {
         this.chart.update()
       }
     }
+    console.log(this.currentDataSet)
   }
 
-  renderLastDayBar() {
-    if (this.dataSettings.lastDay) {
+  renderLastDayBar(params) {
+    console.log('BAR OR LINE')
+    if (params.lastDay) {
+      this.typeOfChart = 'bar';
+    } else {
+      this.typeOfChart = 'line';
+    }
+    if (this.typeOfChart === 'bar') {
       this.lastChart = this.chart.config;
       this.lastData = this.dataSet;
       this.chart.destroy();
@@ -260,20 +265,49 @@ export default class Chart {
           }
         }
       })
-    } else {
+    } else if (this.typeOfChart === 'line') {
+      this.typeOfChart = 'line'
       this.chart.destroy();
       this.dataSet = this.lastData
       this.chart = new _Chart(this.chartElement, this.lastChart);
     }
+    this.dataSettings.lastDay = params.lastDay;
   }
 
-  update(params: Params) {
-    this.dataSettings = params;
-    this.renderLastDayBar();
-    this.renderColorOfDataType();
+ async update(params: Params) {
+    console.log(params)
+    if (this.dataSettings.country !== params.country) {
+      console.log('country')
+
+      const data = generateCountryData(params.country, this.countriesDataSet);
+
+      await data.then((res) => {
+        this.dataSet = res.historicalCountryData;
+        this.lastDaysData = {
+          cases: res.lastDaysCountryData.cases,
+          deaths: res.lastDaysCountryData.deaths,
+          recovered: res.lastDaysCountryData.recovered,
+          date: res.lastDaysCountryData.date
+        };
+        this.dataSet.date = res.lastDaysCountryData.date
+        this.population = res.population;
+        this.dataSettings.country = params.country;
+        // this.currentDataSet = res.lastDaysCountryData.cases;
+      })
+    }
+
+    if (this.dataSettings.lastDay !== params.lastDay) {
+      console.log('lastday')
+      this.renderLastDayBar(params);
+    }
 
 
-    if (this.dataSettings.per100k) {
+      this.renderColorOfDataType(params);
+
+
+    if (this.dataSettings.per100k !== params.per100k) {
+      console.log('per100k')
+
       const newData = generatePer100KData({...this.currentDataSet}, this.population);
       this.chart.data.datasets.forEach((dataset) => {
         dataset.data = newData
@@ -283,7 +317,9 @@ export default class Chart {
         dataset.data = Object.values(this.currentDataSet);
       })
     }
-    this.chart.update()
+    // this.dataSettings = params;
+   console.log(this.currentDataSet)
+
   }
 
   private postSettings(settings: Params) {
