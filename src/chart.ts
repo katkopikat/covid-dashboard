@@ -3,7 +3,11 @@ import { EventFunc, Params, Events, IUpdate, DataTypes } from './dispatch';
 import './assets/styles/chart.scss'
 import ChartService from "./common/services/chart.service";
 import {ICovidData} from "./common/models/map.model";
-import {generateCountryData, generatePer100KData} from "./common/helpers/chart.helpers";
+import {
+  generateCountryData,
+  generatePer100KData,
+  raskrasitPoBratskiSpan
+} from "./common/helpers/chart.helpers";
 
 const mapping: Map<number, string> = new Map([
   [1, 'Jan'],
@@ -216,7 +220,6 @@ export default class Chart {
         this.chart.update()
       }
     }
-    console.log(this.currentDataSet)
   }
 
   renderLastDayBar(params) {
@@ -276,11 +279,11 @@ export default class Chart {
 
  async update(params: Params) {
     if (this.dataSettings.country !== params.country) {
-      console.log('country')
 
       const data = generateCountryData(params.country, this.countriesDataSet);
 
       await data.then((res) => {
+        console.log(res)
         this.dataSet = res.historicalCountryData;
         this.lastDaysData = {
           cases: res.lastDaysCountryData.cases,
@@ -319,35 +322,88 @@ export default class Chart {
   }
 
   addSettingsListeners(): void {
-    const periodController: HTMLInputElement = this.root.querySelector('[name="period"]');
-    const absoluteController: HTMLInputElement = this.root.querySelector('[name="numeric"]');
-    const dataTypesControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll('#chart_cases, #chart_deaths, #chart_recovered');
+    const settingsApplyButton = this.root.querySelector('.btn__settings');
+    const spanToggles = this.root.querySelectorAll('.chart__toggle-mode')
+    if (settingsApplyButton) {
+      settingsApplyButton.addEventListener('click', () => {
+        const periodController: HTMLInputElement = this.root.querySelector('[name="period"]');
+        const absoluteController: HTMLInputElement = this.root.querySelector('[name="numeric"]');
 
-    periodController.addEventListener('change', (e:InputEvent) => {
-      const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = {...this.dataSettings, lastDay: newValue};
-      this.postSettings(newSettings);
-    })
+        const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll(
+          '[name="radio"]',
+        );
 
-    absoluteController.addEventListener('change', (e: InputEvent) => {
-      const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = {...this.dataSettings, per100k: newValue};
+        const newPeriodValue: boolean = periodController.checked;
+        const newRelativeValue: boolean = absoluteController.checked;
+        const checkedDataTypeController: HTMLInputElement = Array.from(dataTypeControllers)
+          .filter((radioController: HTMLInputElement) => radioController.checked)[0];
 
-      this.postSettings(newSettings);
-    })
-
-    dataTypesControllers.forEach((radioController: HTMLInputElement) => {
-      radioController.addEventListener('change', (e: InputEvent) => {
-        const newValue: string = (e.target as HTMLInputElement).value;
+        const newDataTypeValue: string = checkedDataTypeController.value;
+        raskrasitPoBratskiSpan(newDataTypeValue, spanToggles)
         const adapter = {
           cases: DataTypes.CASES,
           deaths: DataTypes.DEATH,
           recovered: DataTypes.RECOVERED,
+        };
+
+        const newSettings: Params = {
+          ...this.dataSettings,
+          lastDay: newPeriodValue,
+          per100k: newRelativeValue,
+          dataType: adapter[newDataTypeValue],
+        };
+        this.postSettings(newSettings);
+      });
+    }
+
+    spanToggles.forEach((span) => {
+      span.addEventListener('click', (e) => {
+        const adapter = {
+          cases: DataTypes.CASES,
+          deaths: DataTypes.DEATH,
+          recovered: DataTypes.RECOVERED,
+        };
+        const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll(
+          '[name="radio"]',
+        );
+
+        if (e.target.textContent === 'Recovered') {
+            spanToggles.forEach((span) => {
+              span.classList.remove('chart-mode-cases')
+              span.classList.remove('chart-mode-recovered')
+              span.classList.remove( 'chart-mode-deaths')
+            })
+          span.classList.add('chart-mode-recovered');
+
         }
-        const newSetting: Params = {...this.dataSettings, dataType: adapter[newValue] };
-        this.postSettings(newSetting)
+        if (e.target.textContent === 'Deaths') {
+          spanToggles.forEach((span) => {
+            span.classList.remove('chart-mode-cases')
+            span.classList.remove('chart-mode-recovered')
+            span.classList.remove( 'chart-mode-deaths')
+          })
+          span.classList.add('chart-mode-deaths');
+        }
+        if (e.target.textContent === 'Cases') {
+          spanToggles.forEach((span) => {
+            span.classList.remove('chart-mode-cases')
+            span.classList.remove('chart-mode-recovered')
+            span.classList.remove( 'chart-mode-deaths')
+          })
+          span.classList.add('chart-mode-cases')
+        }
+        dataTypeControllers.forEach((controller) => {
+          if (controller.value === e.target.textContent.toLowerCase()) {
+            controller.checked = true;
+          }
+        })
+
+        const newSettings: Params = {
+          ...this.dataSettings,
+          dataType: adapter[e.target.textContent.toLowerCase()]
+        };
+        this.postSettings(newSettings);
       })
     })
-
   }
 }

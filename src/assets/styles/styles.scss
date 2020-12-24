@@ -80,12 +80,17 @@ body {
 }
 
 .chart {
-  width: 445px;
-  height: 280px;
+  width: 436px;
+  height: 274px;
   display: flex;
   flex-direction: column;
   align-items: center;
   flex-basis: 47%;
+}
+
+.chart > .heading__section{
+  margin-top: -1.5rem;
+  margin-bottom: 1rem;
 }
 
 .piechart {
@@ -494,8 +499,21 @@ input[type="radio"]:checked+.rdo {
   border-radius: 1rem;
 }
 
+
 .loader--active {
   display: flex;
+}
+
+.chart-mode-cases {
+  color: $desease-color;
+}
+
+.chart-mode-deaths {
+  color: $die-color;
+}
+
+.chart-mode-recovered {
+  color: $recovered-color;
 }
 
 @media (max-width: 1280px) {

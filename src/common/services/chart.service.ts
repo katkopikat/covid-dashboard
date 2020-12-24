@@ -5,7 +5,6 @@
 
 
 import {ICovidData} from "../models/map.model";
-import {IGlobalData} from "../models/chart.model";
 
 export default class ChartService {
   private endpoints: { [k: string]: string };
@@ -35,7 +34,7 @@ export default class ChartService {
   async getGlobalData() {
     const response = await fetch(this.endpoints.global);
 
-    const data: IGlobalData = await response.json();
+    const data = await response.json();
 
     return data;
   }
@@ -52,6 +51,12 @@ export default class ChartService {
     };
   }
 
+  async getGlobalAllData() {
+    const globalData = await this.getGlobalData();
+    const globalLastDaysData = await this.getGlobalLastDaysData();
+
+    return [globalData,globalLastDaysData];
+  }
 
 }
 

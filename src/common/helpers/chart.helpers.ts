@@ -12,26 +12,56 @@ const generatePer100KData = (dataSet, population) => {
 }
 
 const generateCountryData = (iso3, countriesData ) => {
-  const data = chartServise.getHistoricalCountryData(iso3)
-    .then((res) => {
-      const countryData = countriesData.find(({ countryInfo }) => countryInfo.iso3 === iso3);
-      console.log(countryData)
-      return {
-        historicalCountryData: res,
-        lastDaysCountryData: {
-          cases: {month: countryData.todayCases},
-          deaths: {month: countryData.todayDeaths},
-          recovered:{month: countryData.todayRecovered},
-          date: countryData.updated,
-        },
-        population: countryData.population,
-      }
-    })
+    console.log(iso3)
+  if (iso3 === 'GLOBAL') {
+   const data = chartServise.getGlobalAllData()
+     .then ((data) => {
+       return {
+         historicalCountryData: data[0],
+         lastDaysCountryData: {
+           cases: data[1].todayCases,
+           deaths: data[1].todayDeaths,
+           recovered: data[1].todayRecovered,
+           date:data[1].date,
+         },
+         population: data[1].population,
+       }
+     })
+   return data
+  } else {
+    const data = chartServise.getHistoricalCountryData(iso3)
+      .then((res) => {
+        const countryData = countriesData.find(({ countryInfo }) => countryInfo.iso3 === iso3);
+        return {
+          historicalCountryData: res,
+          lastDaysCountryData: {
+            cases: {month: countryData.todayCases},
+            deaths: {month: countryData.todayDeaths},
+            recovered:{month: countryData.todayRecovered},
+            date: countryData.updated,
+          },
+          population: countryData.population,
+        }
+      })
+    return data;
+  }
+}
 
-  return data
+const raskrasitPoBratskiSpan = (type, spanToggles) => {
+  spanToggles.forEach((span) => {
+    if (type === span.textContent.toLowerCase()) {
+      spanToggles.forEach((span) => {
+        span.classList.remove('chart-mode-cases')
+        span.classList.remove('chart-mode-recovered')
+        span.classList.remove( 'chart-mode-deaths')
+      })
+      span.classList.add(`chart-mode-${type}`)
+    }
+  })
 }
 
 export {
   generatePer100KData,
   generateCountryData,
+  raskrasitPoBratskiSpan,
 }
