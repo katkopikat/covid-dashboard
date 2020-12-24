@@ -4,4 +4,24 @@
   position: relative;
   overflow: hidden;
 }
+.chart__toggle-mode {
+    cursor: pointer;
+}
 
+.chart_mode-global {
+  &:hover {
+    color: #1d6dec;
+  }
+}
+
+.chart_mode--recovered {
+  &:hover {
+    color: #3BCC92;
+  }
+}
+
+.chart_mode--death {
+  &:hover {
+    color: #AA213A;
+  }
+}
