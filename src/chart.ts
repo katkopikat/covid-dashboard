@@ -172,7 +172,7 @@ export default class Chart {
 
 
   renderColorOfDataType(params) {
-    console.log('renderColor')
+    console.log(this.lastDaysData.cases, this.dataSettings.lastDay)
     switch (params.dataType) {
       case DataTypes.CASES: {
         this.chart.data = {
@@ -184,7 +184,7 @@ export default class Chart {
             backgroundColor: '#1D6DEC',
             fill: false
         }]}
-        this.currentDataSet = this.dataSet.cases
+        this.currentDataSet = this.dataSettings.lastDay? this.lastDaysData.cases : this.dataSet.cases
         this.chart.update()
         break
       }
@@ -198,7 +198,7 @@ export default class Chart {
             backgroundColor: '#AA213A',
             fill: false
           }]}
-        this.currentDataSet = this.dataSet.deaths
+        this.currentDataSet = this.dataSettings.lastDay? this.lastDaysData.deaths : this.dataSet.deaths
         this.chart.update()
         break
       }
@@ -212,7 +212,7 @@ export default class Chart {
             backgroundColor: '#3BCC92',
             fill: false
           }]}
-        this.currentDataSet = this.dataSet.recovered
+        this.currentDataSet = this.dataSettings.lastDay? this.lastDaysData.recovered : this.dataSet.recovered
         this.chart.update()
       }
     }
@@ -220,7 +220,6 @@ export default class Chart {
   }
 
   renderLastDayBar(params) {
-    console.log('BAR OR LINE')
     if (params.lastDay) {
       this.typeOfChart = 'bar';
     } else {
@@ -272,6 +271,7 @@ export default class Chart {
       this.chart = new _Chart(this.chartElement, this.lastChart);
     }
     this.dataSettings.lastDay = params.lastDay;
+    this.chart.update();
   }
 
  async update(params: Params) {
@@ -291,8 +291,6 @@ export default class Chart {
         this.dataSet.date = res.lastDaysCountryData.date
         this.population = res.population;
         this.dataSettings.country = params.country;
-
-        this.chart.update();
       })
     }
 
@@ -300,22 +298,20 @@ export default class Chart {
       this.renderLastDayBar(params);
     }
 
-
-      this.renderColorOfDataType(params);
-
+    this.renderColorOfDataType(params);
 
     if (this.dataSettings.per100k !== params.per100k) {
-      console.log('pre100k')
       const newData = generatePer100KData({...this.currentDataSet}, this.population);
       this.chart.data.datasets.forEach((dataset) => {
         dataset.data = newData
       })
+      this.chart.update()
     } else {
       this.chart.data.datasets.forEach((dataset) => {
         dataset.data = Object.values(this.currentDataSet);
+        this.chart.update()
       })
     }
-    this.chart.update();
   }
 
   private postSettings(settings: Params) {
