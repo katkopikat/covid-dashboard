@@ -308,18 +308,20 @@ export default class Chart {
 
     this.renderColorOfDataType(params);
 
-    if (this.dataSettings.per100k !== params.per100k) {
+    if (params.per100k) {
       const newData = generatePer100KData({ ...this.currentDataSet }, this.population);
       this.chart.data.datasets.forEach((dataset) => {
         // eslint-disable-next-line no-param-reassign
         dataset.data = newData;
       });
       this.chart.update();
+      this.dataSettings.per100k = params.per100k;
     } else {
       this.chart.data.datasets.forEach((dataset) => {
         // eslint-disable-next-line no-param-reassign
         dataset.data = Object.values(this.currentDataSet);
         this.chart.update();
+        this.dataSettings.per100k = params.per100k;
       });
     }
   }
@@ -409,6 +411,7 @@ export default class Chart {
           ...this.dataSettings,
           dataType: adapter[(e.target as HTMLElement).textContent.toLowerCase()],
         };
+        console.log(newSettings);
         this.postSettings(newSettings);
       });
     });
