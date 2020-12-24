@@ -1,16 +1,13 @@
-$bg-color: #A1A1AA;
+$bg-color: #232323;
 
 .wrapper {
   position: fixed;
   z-index: 1000;
   bottom:0;
   width: 100%;
-  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(200,200,200,1) 50%, rgba(200,200,200,1) 50%, rgba(0,0,0,0) 100%);
-  transition: bottom 0.8s;
-
+  background: $bg-color;
   font-size: 14px;
-  font-weight: bold;
-  font-family: 'Times New Roman', sans-serif;
+  font-family: 'Roboto', sans-serif;
 
   &-hidden {
     bottom: -100%;
@@ -20,10 +17,13 @@ $bg-color: #A1A1AA;
 .kbd {
   user-select: none;
   width: 480px;
-  margin: -30px auto 0;
+  margin: 0 auto;
   background-color: $bg-color;
-  border-radius: 15px;
+  border-radius: 12px;
   padding: 7px;
+
+  font-size: 18px;
+  font-weight: 100;
 
   &-row {
     display: flex;
@@ -39,18 +39,21 @@ $bg-color: #A1A1AA;
     justify-content: center;
     align-items: center;
 
-    background-color: white;
+    background-color: #191a1a;
     text-align: center;
-    border: 1px solid gray;
-    border-radius: 15px;
-    box-shadow: grey 2px 2px 2px;
+    border-radius: 3px;
+    box-shadow: black 2px 2px 2px;
+
+    color: white;
 
     &.kbd-special {
-      background-color: #f0f0f0;
+      background-color: #121515;
+      font-size: 13px;
     }
 
     &:hover {
-      border-color: white;
+      background: #aa213a;
+      cursor: pointer;
     }
 
     &:active, &.pressed {
@@ -58,15 +61,26 @@ $bg-color: #A1A1AA;
       top: 2px;
       left: 2px;
       box-shadow: none;
-      background-color: #a0a0a0;
+      background-color: #aa213a;
+      color: white;
     }
-  }
+
+    i {
+      color: white;
+      opacity: 1;
+      margin: 0;
+      font-size: 18px;
+      }
 
   &-space {width: 134px;}
   &-shift {width: 64px;}
   &-wide {width: 46px;}
 }
+}
 
+.kbd-space{
+  flex-grow: 1;
+}
 @media only screen and (min-width: 1020px) {
 
   .kbd {
@@ -74,18 +88,32 @@ $bg-color: #A1A1AA;
     transform: rotate3d(1,0,0,15deg);
     perspective: 70rem;
     perspective-origin: 50% 50%;
+    font-size: 22px;
 
-    font-size: 24px;
 
     &-key {
       width: 60px;
       height: 60px;
       margin: 5px 1px;
-      border-radius: 30px;
+      border-radius: 8px;
     }
-    &-space {width: 300px;}
+
+    &.kbd-special {
+      font-size: 16px;
+    }
+
+    i {
+      font-size: 25px;
+    }
+
+    &-space {
+      flex-grow: 0;
+      width: 300px;
+    }
+
     &-shift {width: 154px;}
     &-wide {width: 106px;}
   }
+
 
 }

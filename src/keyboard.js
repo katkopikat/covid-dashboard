@@ -226,7 +226,7 @@ class Display {
   constructor() {
     this.element = undefined;
 
-    document.querySelectorAll('textarea, input').forEach((el) => {
+    document.querySelectorAll('textarea, .input_country').forEach((el) => {
       el.addEventListener('focus', (e) => {
         this.element = e.target;
         kbd.hidden = false;
