@@ -222,7 +222,7 @@ body {
   &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-track { background: $dark-gray; }
   &::-webkit-scrollbar-thumb { background: $medium-gray; }
-  &::-webkit-scrollbar-thumb:hover { background: $light-gray; }
+  &::-webkit-scrollbar-thumb:hover {background: $light-gray;}
 }
 
 .countries__item {
@@ -233,6 +233,7 @@ body {
 
   &:hover {
     background-color: $very-dark-gray;
+    cursor: pointer;
   }
 }
 
@@ -432,6 +433,9 @@ input[type="checkbox"]::before {
 input:checked[type="checkbox"]::before {
   top: 27px;
 }
+input[type="checkbox"]:hover{
+  cursor: pointer;
+}
 
 .rdo {
   position: relative;
@@ -612,6 +616,7 @@ input[type="radio"]:checked+.rdo {
 @media (max-width: 768px) {
   .header__heading {
     font-size: 1.6rem;
+    text-align: center;
   }
 
   .wrapper__width {
@@ -719,4 +724,14 @@ input[type="radio"]:checked+.rdo {
   .wrapper__fullscreen {
     height: calc(100vh - 170px);
   }
+}
+
+@media (max-width: 500px){
+.wrapper--main {
+    justify-content: center;
+    height: 2000px;
+  }
+  .header__heading {
+    text-align: center;
+}
 }
