@@ -1,12 +1,12 @@
 // eslint-disable-next-line import/no-cycle
-import Chart from './chart';
+import Chart, {ResponseEbywii} from './chart';
 // eslint-disable-next-line import/no-cycle
 import Map from './map';
 // eslint-disable-next-line import/no-cycle
 import Countries from './countries';
 // eslint-disable-next-line import/no-cycle
 import Dashboard from './dashboard';
-// eslint-disable-next-line import/no-cycle
+import chartService from './common/services/chart.service'
 import Doughnut from './doughnut';
 
 export interface Params {
@@ -41,7 +41,7 @@ export default class Dispatch {
 
   constructor() {
     const eventFunction: EventFunc = this.processEvent;
-    this.chart = new Chart(eventFunction);
+    this.chart = new Chart(eventFunction)
     this.map = new Map(eventFunction);
     this.countries = new Countries(eventFunction);
     this.dashboard = new Dashboard(eventFunction);
