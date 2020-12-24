@@ -8,6 +8,7 @@ import ChartService from './common/services/chart.service';
 import { ICovidData } from './common/models/map.model';
 // eslint-disable-next-line import/no-cycle
 import {
+  colorSpansFromSettings,
   generateCountryData,
   generatePer100KData,
   raskrasitPoBratskiSpan,
@@ -231,6 +232,7 @@ export default class Chart {
         this.chart.update();
       }
     }
+    this.dataSettings.dataType = params.dataType;
   }
 
   renderLastDayBar(params) {
@@ -324,6 +326,7 @@ export default class Chart {
         this.dataSettings.per100k = params.per100k;
       });
     }
+    colorSpansFromSettings(this.dataSettings.dataType, this.root.querySelectorAll('.chart__toggle-mode'));
   }
 
   private postSettings(settings: Params) {
@@ -411,7 +414,6 @@ export default class Chart {
           ...this.dataSettings,
           dataType: adapter[(e.target as HTMLElement).textContent.toLowerCase()],
         };
-        console.log(newSettings);
         this.postSettings(newSettings);
       });
     });
