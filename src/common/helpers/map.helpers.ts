@@ -135,12 +135,13 @@ const pointToLayer = (feature: { [k: string]: any }, latlng: number[]) => {
   const width = MARKER_SIZE_STEP * markerIndex * coefficient;
   const height = MARKER_SIZE_STEP * markerIndex * coefficient;
   const html = `
-    <span class="icon-marker icon-marker--${currentKey}" style="width: ${width}em; height: ${height}em"></span>
+    <span class="icon-marker icon-marker--${currentKey}"
+          style="width: ${width}em; height: ${height}em; margin-left: -${width / 2}em; margin-top: -${height / 2}em"></span>
   `;
 
   return Leaflet.marker(latlng, {
     icon: Leaflet.divIcon({
-      className: 'icon',
+      className: 'heatmap-icon',
       html,
     }),
     riseOnHover: true,
@@ -218,6 +219,16 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
   return template;
 };
 
+const focusTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="m497 0h-90c-8.284 0-15 6.716-15 15s6.716 15 15 15h75v75c0 8.284 6.716 15 15 15s15-6.716 15-15v-90c0-8.284-6.716-15-15-15z"/>
+<path d="m105 0h-90c-8.284 0-15 6.716-15 15v90c0 8.284 6.716 15 15 15s15-6.716 15-15v-75h75c8.284 0 15-6.716 15-15s-6.716-15-15-15z"/>
+<path d="m105 482h-75v-75c0-8.284-6.716-15-15-15s-15 6.716-15 15v90c0 8.284 6.716 15 15 15h90c8.284 0 15-6.716 15-15s-6.716-15-15-15z"/>
+<path d="m497 392c-8.284 0-15 6.716-15 15v75h-75c-8.284 0-15 6.716-15 15s6.716 15 15 15h90c8.284 0 15-6.716 15-15v-90c0-8.284-6.716-15-15-15z"/>
+<path d="m316 241h-45v-45c0-8.284-6.716-15-15-15s-15 6.716-15 15v45h-45c-8.284 0-15 6.716-15 15s6.716 15 15 15h45v45c0 8.284 6.716 15 15 15s15-6.716 15-15v-45h45c8.284 0 15-6.716 15-15s-6.716-15-15-15z"/>
+</svg>
+`;
+
 export {
   getCountryStyle,
   getGeoJsonData,
@@ -228,4 +239,5 @@ export {
   roundToPowerOfTen,
   getTooltipTemplate,
   convertDataToRelative,
+  focusTemplate,
 };
