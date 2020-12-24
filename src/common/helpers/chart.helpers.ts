@@ -12,10 +12,10 @@ const generatePer100KData = (dataSet, population) => {
 }
 
 const generateCountryData = (iso3, countriesData ) => {
-
   const data = chartServise.getHistoricalCountryData(iso3)
     .then((res) => {
       const countryData = countriesData.find(({ countryInfo }) => countryInfo.iso3 === iso3);
+      console.log(countryData)
       return {
         historicalCountryData: res,
         lastDaysCountryData: {

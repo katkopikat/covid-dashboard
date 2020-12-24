@@ -275,7 +275,6 @@ export default class Chart {
   }
 
  async update(params: Params) {
-    console.log(params)
     if (this.dataSettings.country !== params.country) {
       console.log('country')
 
@@ -292,12 +291,12 @@ export default class Chart {
         this.dataSet.date = res.lastDaysCountryData.date
         this.population = res.population;
         this.dataSettings.country = params.country;
-        // this.currentDataSet = res.lastDaysCountryData.cases;
+
+        this.chart.update();
       })
     }
 
     if (this.dataSettings.lastDay !== params.lastDay) {
-      console.log('lastday')
       this.renderLastDayBar(params);
     }
 
@@ -306,8 +305,7 @@ export default class Chart {
 
 
     if (this.dataSettings.per100k !== params.per100k) {
-      console.log('per100k')
-
+      console.log('pre100k')
       const newData = generatePer100KData({...this.currentDataSet}, this.population);
       this.chart.data.datasets.forEach((dataset) => {
         dataset.data = newData
@@ -317,9 +315,7 @@ export default class Chart {
         dataset.data = Object.values(this.currentDataSet);
       })
     }
-    // this.dataSettings = params;
-   console.log(this.currentDataSet)
-
+    this.chart.update();
   }
 
   private postSettings(settings: Params) {
