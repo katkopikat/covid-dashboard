@@ -12,7 +12,6 @@ const generatePer100KData = (dataSet, population) => {
 }
 
 const generateCountryData = (iso3, countriesData ) => {
-    console.log(iso3)
   if (iso3 === 'GLOBAL') {
    const data = chartServise.getGlobalAllData()
      .then ((data) => {

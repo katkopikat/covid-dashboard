@@ -76,7 +76,6 @@ export default class Map implements IUpdate {
     this.mapService = new MapService();
     this.mapService.getMapData().then((data: ICovidData[]) => {
       this.data = data;
-      console.log(this.data)
       this.init();
     });
   }

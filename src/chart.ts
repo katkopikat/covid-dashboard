@@ -176,7 +176,6 @@ export default class Chart {
 
 
   renderColorOfDataType(params) {
-    console.log(this.lastDaysData.cases, this.dataSettings.lastDay)
     switch (params.dataType) {
       case DataTypes.CASES: {
         this.chart.data = {
@@ -283,7 +282,6 @@ export default class Chart {
       const data = generateCountryData(params.country, this.countriesDataSet);
 
       await data.then((res) => {
-        console.log(res)
         this.dataSet = res.historicalCountryData;
         this.lastDaysData = {
           cases: res.lastDaysCountryData.cases,
