@@ -1,5 +1,6 @@
-// eslint-disable-next-line import/no-cycle,object-curly-newline
 import Leaflet from 'leaflet';
+import Chart from 'chart.js';
+// eslint-disable-next-line import/no-cycle,object-curly-newline
 import {
   EventFunc, Params, Events, IUpdate, DataTypes,
 } from './dispatch';
@@ -23,9 +24,8 @@ import {
   pointToLayer,
   roundToPowerOfTen,
 } from './common/helpers/map.helpers';
-import { DataKey } from './common/models/common.model';
+import { DataKey, GLOBAL } from './common/models/common.model';
 import MapService from './common/services/map.service';
-import Chart from 'chart.js';
 
 export default class Map implements IUpdate {
   private readonly root: HTMLElement;
@@ -37,6 +37,7 @@ export default class Map implements IUpdate {
   private layer = null;
   private countriesLayer;
   private markersLayers;
+  private pointToCurrentFly;
   private maxZoom = 7;
   private minZoom = 1;
   private mapOptions: IMapOptions = {
@@ -58,12 +59,14 @@ export default class Map implements IUpdate {
   private mapService: MapService;
   private dataSettings: Params;
   private countryFlyInZoom = 4;
+  private removingTimeout: ReturnType<typeof setTimeout>;
+  private fly_by_click = false;
 
   constructor(eventFunction: EventFunc) {
     this.raiseEvent = eventFunction;
     this.root = document.querySelector('.map');
     this.dataSettings = {
-      country: 'Global',
+      country: GLOBAL,
       dataType: DataTypes.CASES,
       lastDay: false,
       per100k: false,
@@ -85,6 +88,9 @@ export default class Map implements IUpdate {
       const country: ICovidData = this.getCountryById(this.dataSettings.country);
       if (country) {
         this.goToCountry([country.countryInfo.long, country.countryInfo.lat]);
+      }
+      if (this.dataSettings.country === GLOBAL) {
+        this.goToCountry(this.mapOptions.center);
       }
     }
   }
@@ -166,40 +172,37 @@ export default class Map implements IUpdate {
   }
 
   private addSettingsListener(): void {
-    const periodController: HTMLInputElement = this.root.querySelector('[name="period"]');
-    periodController.addEventListener('change', (e: InputEvent) => {
-      // period controller. Default is false -> period = all time | true -> period = one day
-      const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = { ...this.dataSettings, lastDay: newValue };
-      this.postSettings(newSettings);
-    });
+    const settingsApplyButton = this.root.querySelector('.btn__settings');
+    if (settingsApplyButton) {
+      settingsApplyButton.addEventListener('click', () => {
+        const periodController: HTMLInputElement = this.root.querySelector('[name="period"]');
+        const absoluteController: HTMLInputElement = this.root.querySelector('[name="numeric"]');
 
-    const absoluteController: HTMLInputElement = this.root.querySelector('[name="numeric"]');
-    absoluteController.addEventListener('change', (e: InputEvent) => {
-      // absolute controller. Default is false -> numeric = absolute | true -> relative
-      const newValue: boolean = (e.target as HTMLInputElement).checked;
-      const newSettings: Params = { ...this.dataSettings, per100k: newValue };
-      this.postSettings(newSettings);
-    });
+        const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll(
+          '[name="map_radio"]',
+        );
 
-    const dataTypeControllers: NodeListOf<HTMLInputElement> = this.root.querySelectorAll(
-      '[name="map_radio"]',
-    );
+        const newPeriodValue: boolean = periodController.checked;
+        const newRelativeValue: boolean = absoluteController.checked;
+        const checkedDataTypeController: HTMLInputElement = Array.from(dataTypeControllers)
+          .filter((radioController: HTMLInputElement) => radioController.checked)[0];
 
-    Array.from(dataTypeControllers).forEach((radioController: HTMLInputElement) => {
-      // default cases; other - recovered | deaths
-      radioController.addEventListener('change', (e: InputEvent) => {
-        const newValue: string = (e.target as HTMLInputElement).value;
+        const newDataTypeValue: string = checkedDataTypeController.value;
         const adapter = {
           cases: DataTypes.CASES,
           deaths: DataTypes.DEATH,
           recovered: DataTypes.RECOVERED,
         };
 
-        const newSettings: Params = { ...this.dataSettings, dataType: adapter[newValue] };
+        const newSettings: Params = {
+          ...this.dataSettings,
+          lastDay: newPeriodValue,
+          per100k: newRelativeValue,
+          dataType: adapter[newDataTypeValue],
+        };
         this.postSettings(newSettings);
       });
-    });
+    }
   }
 
   private addTileLayer(): void {
@@ -363,6 +366,7 @@ export default class Map implements IUpdate {
 
         if (this.countryCodeToGo !== newCountryCodeToGo) {
           const newSettings: Params = { ...this.dataSettings, country: newCountryCodeToGo };
+          this.fly_by_click = true;
           this.postSettings(newSettings);
         }
       },
@@ -382,8 +386,9 @@ export default class Map implements IUpdate {
   private eachMarkerHandler(feature: IFeature, layer): void {
     layer.on({
       mouseover: (e: { target: { feature: { properties: ICovidData } } }) => {
-        const item: ICovidData = e.target.feature.properties as ICovidData;
-        const countryName: string = item.country;
+        const countryId: string = e.target.feature.properties.countryInfo.iso3;
+        const countryName: string = e.target.feature.properties.country;
+        const item: ICovidData = this.getCountryById(countryId);
         this.showTooltip(item, countryName, this.currentDataType);
       },
 
@@ -392,11 +397,24 @@ export default class Map implements IUpdate {
   }
 
   private showTooltip(item: ICovidData, countryName: string, currentKey: DataKey): void {
-    const template = getTooltipTemplate(item, countryName, currentKey);
+    const itemCopy: ICovidData = item && { ...item };
+    if (this.dataSettings.per100k && item) {
+      [
+        DataKey.cases,
+        DataKey.deaths,
+        DataKey.recovered,
+        DataKey.todayCases,
+        DataKey.todayDeaths,
+        DataKey.todayRecovered,
+      ].forEach((key: string) => {
+        itemCopy[key] = convertDataToRelative(itemCopy[key], itemCopy.population);
+      });
+    }
+    const template = getTooltipTemplate(itemCopy, countryName, currentKey);
     this.tooltipElement.innerHTML = template;
     this.tooltipElement.style.display = 'block';
-    if (item) {
-      this.addChart(item);
+    if (itemCopy) {
+      this.addChart(itemCopy);
     }
   }
 
@@ -406,9 +424,42 @@ export default class Map implements IUpdate {
   }
 
   private goToCountry(countryCoords: number[]) {
-    this.mapElement.flyTo(countryCoords.reverse());
+    this.mapElement.flyTo(countryCoords.slice().reverse());
+
+    if (this.removingTimeout) {
+      clearTimeout(this.removingTimeout);
+      this.removingTimeout = null;
+    }
+    if (this.pointToCurrentFly) {
+      this.mapElement.removeLayer(this.pointToCurrentFly);
+    }
+    if (!this.fly_by_click) {
+      setTimeout(() => {
+        this.addPoint(countryCoords.slice().reverse());
+      }, 500);
+    }
+    this.fly_by_click = false;
     this.zoomInButton.disabled = false;
     this.zoomOutButton.disabled = false;
+  }
+
+  private addPoint(countryCoords: number[]) {
+    const html = `
+    <span class="fly-to-marker"></span>
+  `;
+    this.pointToCurrentFly = Leaflet.marker(countryCoords, {
+      icon: Leaflet.divIcon({
+        className: 'icon',
+        html,
+      }),
+      riseOnHover: true,
+    });
+
+    this.pointToCurrentFly.addTo(this.mapElement);
+
+    this.removingTimeout = setTimeout(() => {
+      this.mapElement.removeLayer(this.pointToCurrentFly);
+    }, 3000);
   }
 
   private getCountryById(id: string): ICovidData {
@@ -419,25 +470,9 @@ export default class Map implements IUpdate {
   }
 
   private addChart(item: ICovidData) {
-    let chartData: number[] = this.dataSettings.lastDay
+    const chartData: number[] = this.dataSettings.lastDay
       ? [item.todayDeaths, item.todayCases, item.todayRecovered]
       : [item.deaths, item.cases, item.recovered];
-
-    if (this.dataSettings.per100k) {
-      const currentKey: DataKey = this.getDataKey();
-      chartData = chartData.map((value: number, index: number) => {
-        if (/death/gi.test(currentKey) && index === 0) {
-          return value;
-        }
-        if (/case/gi.test(currentKey) && index === 1) {
-          return value;
-        }
-        if (/recovered/gi.test(currentKey) && index === 2) {
-          return value;
-        }
-        return convertDataToRelative(value, item.population);
-      });
-    }
 
     const chartLegend: string[] = this.dataSettings.lastDay
       ? [DataKey.todayDeaths, DataKey.todayCases, DataKey.todayRecovered]
@@ -461,8 +496,18 @@ export default class Map implements IUpdate {
       },
       options: {
         responsive: false,
+
+        cutoutPercentage: 80,
         legend: {
           display: false,
+        },
+        tooltips: {
+          callbacks: {
+            title: (tooltipItem, data) => data.labels[tooltipItem[0].index],
+            label: (tooltipItem, data) => Number(
+              data.datasets[0].data[tooltipItem.index],
+            ).toLocaleString(),
+          },
         },
         plugins: {
           legend: {

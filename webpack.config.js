@@ -111,7 +111,15 @@ module.exports = {
       },
       {
         test: /\.(mp3|wav)$/,
-        use: 'file-loader',
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/audio/',
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,

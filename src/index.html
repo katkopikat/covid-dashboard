@@ -8,27 +8,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Gudea&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <title>COVID-2019 Dashboard</title>
 </head>
-<body>
+<body style="background-color: #191A1A;">
   <div class="main__content">
     <div class="wrapper__width">
       <header class="header">
       <h1 class="header__heading">COVID-19 |
         <span class="header__heading--dashboard">Dashboard</span>
-        <span class="header__heading--country">for Germany</span>
+        <span class="header__heading--country"></span>
         <span class="header__heading--country_flag"></span>
       </h1>
         <span class="wrapper__update_time">
           <span class="header__update-hint">last update</span>
-          <span class="header__update-time">12/13/2020, 1:26 ДП</span>
+          <span class="header__update-time">-- -- --</span>
       </span>
       </header>
     </div>
     <div class="wrapper__width wrapper--main">
       <section class="countries content__block" >
         <div class="settings__icons search_country">
-          <input class="input_country" placeholder="Input country">
+          <input id="search_country" class="input_country" placeholder="Search country">
           <i class="btn_settings--countries fas fa-sliders-h"></i>
           <i class="btn_fullscreen--countries fas fa-expand"></i>
         </div>
@@ -73,16 +74,6 @@
           <button class="btn__settings">OK</button>
         </div>
         <ul class="countries__list">
-          <li class="countries__item">
-            <span class="flag"></span>
-            <span class="country__number">1 417 072</span>
-            <span class="country__name">Columbia</span>
-          </li>
-          <li class="countries__item">
-            <span class="flag"></span>
-            <span class="country__number">1 417 072</span>
-            <span class="country__name">Columbia</span>
-          </li>
         </ul>
       </section>
       <section id="map" class="map content__block">
@@ -129,7 +120,7 @@
           <button class="btn__settings">OK</button>
         </div>
       </section>
-      <div class="wrapper_dashboard_chart">
+        <div class="wrapper_dashboard">
       <section class="dashboard content__block">
         <div class="settings__block settings__dashboard hide">
           <h3 class="settings__heading">Settings </h3>
@@ -152,26 +143,46 @@
 
           <button class="btn__settings">OK</button>
         </div>
+        <div class="loader loader__dashboard">
+          <div class="loader_wrapper">
+          <div class="wBall" id="wBall_1">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_2">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_3">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_4">
+            <div class="wInnerBall"></div>
+          </div>
+          <div class="wBall" id="wBall_5">
+            <div class="wInnerBall"></div>
+          </div>
+        </div>
+        </div>
         <div class="settings__icons">
           <i class="btn_settings--dashboard fas fa-sliders-h"></i>
           <i class="btn_fullscreen--dashboard fas fa-expand"></i>
         </div>
-          <span class="dashboard-data dashboard--cases">
-            <h2 class="heading__section">Global Cases</h2>
-            <span class="dashboard__number dashboard__number--cases">54 456 597</span>
-          </span>
-          <span class="dashboard-data dashboard--recovery">
-            <h2 class="heading__section">Global Recovered</h2>
-            <span class="dashboard__number dashboard__number--recovered">46 538 511</span>
-          </span>
-          <span class="dashboard-data dashboard--death">
-            <h2 class="heading__section">Global Death</h2>
-            <span class="dashboard__number dashboard__number--death">1 456 597</span>
-          </span>
+        <span class="dashboard-data dashboard--cases">
+          <h2 class="heading__section heading__section--cases">Global Cases</h2>
+          <span class="dashboard__number dashboard__number--cases">-- -- --</span>
+        </span>
+        <span class="dashboard-data dashboard--recovery">
+          <h2 class="heading__section heading__section--recovery"></h2>
+          <span class="dashboard__number dashboard__number--recovered">-- -- --</span>
+        </span>
+        <span class="dashboard-data dashboard--death">
+          <h2 class="heading__section heading__section--death">Global Death</h2>
+          <span class="dashboard__number dashboard__number--death">-- -- --</span>
+        </span>
       </section>
       <section class="piechart content__block">
         <div class="piechart__wrapper"></div>
       </section>
+      </div>
       <section class="chart content__block" >
         <div class="settings__icons">
           <i class="btn_settings--chart fas fa-sliders-h"></i>
@@ -188,7 +199,7 @@
             <span class="btn__period period--day">on the day</span>
           </div>
           <div class="settings__numeric">
-            <h4 class="settings__subheading">Numeric display: </h4>
+            <h4 class="settings__subheading">Numeric: </h4>
             <form action="#">
               <input type="checkbox" name="numeric" value="absolite">
             </form>
@@ -223,57 +234,102 @@
           <div class="chart__wrapper">
           </div>
       </section>
-    </div>
-
-    <section class="chart chart--device content__block" >
-      <div class="settings__icons">
-        <i class="btn_settings--chart fas fa-sliders-h"></i>
-        <i class="btn_fullscreen--chart fas fa-expand"></i>
-      </div>
-      <div class="settings__block settings__chart hide">
-        <h3 class="settings__heading">Settings </h3>
-        <div class="settings__period">
-          <h4 class="settings__subheading">Period: </h4>
-          <form action="#">
-          <input type="checkbox" name="period" value="alltime">
-        </form>
-          <span class="btn__period period--alltime">of all time</span>
-          <span class="btn__period period--day">on the day</span>
-        </div>
-        <div class="settings__numeric">
-          <h4 class="settings__subheading">Numeric display: </h4>
-          <form action="#">
-            <input type="checkbox" name="numeric" value="absolite">
-          </form>
-          <span class="btn__numeric numeric--absolute">absolute</span>
-         <span class="btn__numeric numeric---population">per 100k people</span>
-        </div>
-        <button class="btn__settings">OK</button>
-      </div>
-        <h2 class="heading__section ">
-          <span class="chart__toggle-mode chart_mode-global mode_active"> Global Cases </span> |
-          <span class="chart__toggle-mode chart_mode--recovered"> Recovered</span> |
-          <span class="chart__toggle-mode chart_mode--death"> Death </span>
-        </h2>
-        <div class="chart__wrapper">
-        </div>
-    </section>
-
   </div>
   </div>
-    <footer class="footer">
-      <div class="wrapper__width wrapper--footer">
-      <span class="git_year__wrapper">
-        <span class="git_links">
-          Made by <a class="git_link" href="https://github.com/fodin">fodin</a>  |
-                  <a class="git_link"href="https://github.com/kornienko199004">kornienko199004</a>  |
-                  <a class="git_link" href="https://github.com/gertvaliakhmetov">GertValiakhmetov</a>  |
-                  <a class="git_link" href="https://github.com/katkopikat">katkopikat</a>
-        </span><br>
-        <span class="year">2020</span>
-      </span>
-      <a class="rs__link" href="https://rs.school/js/"><img class="logo__img" src="./assets/images/rs_logo.png"></a>
+  <footer class="footer">
+    <div class="wrapper__width wrapper--footer">
+    <span class="git_year__wrapper">
+      <span class="git_links">
+        Made by <a class="git_link" href="https://github.com/fodin">Fodin</a>  |
+                <a class="git_link"href="https://github.com/kornienko199004">kornienko199004</a>  |
+                <a class="git_link" href="https://github.com/gertvaliakhmetov">GertValiakhmetov</a>  |
+                <a class="git_link" href="https://github.com/katkopikat">katkopikat</a>
+      </span><br>
+      <span class="year">2020</span>
+    </span>
+    <a class="rs__link" href="https://rs.school/js/"><img class="logo__img" src="./assets/images/rs_logo.png"></a>
+  </div>
+  </footer>
+  <div class="wrapper wrapper-hidden">
+  <div class="kbd">
+    <div class="kbd-row">
+      <div class="kbd-key" data-key="Backquote">`</div>
+      <div class="kbd-key" data-key="Digit1">1</div>
+      <div class="kbd-key" data-key="Digit2">2</div>
+      <div class="kbd-key" data-key="Digit3">3</div>
+      <div class="kbd-key" data-key="Digit4">4</div>
+      <div class="kbd-key" data-key="Digit5">5</div>
+      <div class="kbd-key" data-key="Digit6">6</div>
+      <div class="kbd-key" data-key="Digit7">7</div>
+      <div class="kbd-key" data-key="Digit8">8</div>
+      <div class="kbd-key" data-key="Digit9">9</div>
+      <div class="kbd-key" data-key="Digit0">0</div>
+      <div class="kbd-key" data-key="Minus">-</div>
+      <div class="kbd-key" data-key="Equal">=</div>
+      <div class="kbd-key kbd-special" data-key="Backspace"><i class="material-icons">keyboard_backspace</i></div>
     </div>
-    </footer>
+    <div class="kbd-row">
+      <div class="kbd-key kbd-special" data-key="Tab"><i class="material-icons">keyboard_tab</i></div>
+      <div class="kbd-key" data-key="KeyQ">q</div>
+      <div class="kbd-key" data-key="KeyW">w</div>
+      <div class="kbd-key" data-key="KeyE">e</div>
+      <div class="kbd-key" data-key="KeyR">r</div>
+      <div class="kbd-key" data-key="KeyT">t</div>
+      <div class="kbd-key" data-key="KeyY">y</div>
+      <div class="kbd-key" data-key="KeyU">u</div>
+      <div class="kbd-key" data-key="KeyI">i</div>
+      <div class="kbd-key" data-key="KeyO">o</div>
+      <div class="kbd-key" data-key="KeyP">p</div>
+      <div class="kbd-key" data-key="BracketLeft">[</div>
+      <div class="kbd-key" data-key="BracketRight">]</div>
+      <div class="kbd-key" data-key="Backslash">\</div>
+    </div>
+    <div class="kbd-row">
+      <div class="kbd-key kbd-special kbd-wide" data-key="CapsLock"><i class="material-icons">keyboard_capslock</i>
+      </div>
+      <div class="kbd-key" data-key="KeyA">a</div>
+      <div class="kbd-key" data-key="KeyS">s</div>
+      <div class="kbd-key" data-key="KeyD">d</div>
+      <div class="kbd-key" data-key="KeyF">f</div>
+      <div class="kbd-key" data-key="KeyG">g</div>
+      <div class="kbd-key" data-key="KeyH">h</div>
+      <div class="kbd-key" data-key="KeyJ">j</div>
+      <div class="kbd-key" data-key="KeyK">k</div>
+      <div class="kbd-key" data-key="KeyL">l</div>
+      <div class="kbd-key" data-key="Semicolon">;</div>
+      <div class="kbd-key" data-key="Quote">'</div>
+      <div class="kbd-key kbd-special kbd-wide" data-key="Enter"><i class="material-icons">keyboard_return</i></div>
+    </div>
+    <div class="kbd-row">
+      <div class="kbd-key kbd-special kbd-shift" data-key="ShiftLeft"><i class="material-icons">arrow_circle_up</i>
+      </div>
+      <div class="kbd-key" data-key="KeyZ">z</div>
+      <div class="kbd-key" data-key="KeyX">x</div>
+      <div class="kbd-key" data-key="KeyC">c</div>
+      <div class="kbd-key" data-key="KeyV">v</div>
+      <div class="kbd-key" data-key="KeyB">b</div>
+      <div class="kbd-key" data-key="KeyN">n</div>
+      <div class="kbd-key" data-key="KeyM">m</div>
+      <div class="kbd-key" data-key="Comma">,</div>
+      <div class="kbd-key" data-key="Period">.</div>
+      <div class="kbd-key" data-key="Slash">/</div>
+      <div class="kbd-key kbd-special kbd-shift" data-key="ShiftRight"><i class="material-icons">arrow_circle_up</i>
+      </div>
+    </div>
+    <div class="kbd-row">
+      <div class="kbd-key kbd-special" data-key="Lang">En</div>
+      <div class="kbd-key kbd-special" data-key="ControlLeft">Ctrl</div>
+      <div class="kbd-key kbd-special" data-key="Mute"><i class="material-icons">volume_up</i></div>
+      <div class="kbd-key kbd-special" data-key="AltLeft">Alt</div>
+      <div class="kbd-key kbd-special kbd-space" data-key="Space"></div>
+      <div class="kbd-key kbd-special" data-key="AltRight">Alt</div>
+      <div class="kbd-key kbd-special" data-key="Voice"><i class="material-icons">mic_off</i></div>
+      <div class="kbd-key kbd-special" data-key="ControlRight">Ctrl</div>
+      <div class="kbd-key kbd-special" data-key="ArrowLeft"><i class="material-icons">keyboard_arrow_left</i></div>
+      <div class="kbd-key kbd-special" data-key="ArrowRight"><i class="material-icons">keyboard_arrow_right</i></div>
+      <div class="kbd-key kbd-special" data-key="Hide"><i class="material-icons">keyboard_hide</i></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

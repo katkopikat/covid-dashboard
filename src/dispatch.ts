@@ -7,7 +7,7 @@ import Countries from './countries';
 // eslint-disable-next-line import/no-cycle
 import Dashboard from './dashboard';
 import chartService from './common/services/chart.service'
-
+import Doughnut from './doughnut';
 
 export interface Params {
   country?: string,
@@ -37,6 +37,7 @@ export default class Dispatch {
   private map: Map;
   private countries: Countries;
   private dashboard: Dashboard;
+  private doughnut: Doughnut;
 
   constructor() {
     const eventFunction: EventFunc = this.processEvent;
@@ -44,6 +45,7 @@ export default class Dispatch {
     this.map = new Map(eventFunction);
     this.countries = new Countries(eventFunction);
     this.dashboard = new Dashboard(eventFunction);
+    this.doughnut = new Doughnut(eventFunction);
   }
 
   processEvent = (message: Events, params: Params) => {
@@ -53,6 +55,7 @@ export default class Dispatch {
         this.map.update(params);
         this.countries.update(params);
         this.dashboard.update(params);
+        this.doughnut.update(params);
         break;
       }
       default: break;

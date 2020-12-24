@@ -1,0 +1,48 @@
+.piechart {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  justify-content: center;
+}
+
+.doghnut-legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doghnut-legend__item {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 170%;
+  font-size: 11px;
+  color: #fff;
+}
+
+.doghnut-legend__example {
+  margin-right: 12px;
+  display: inline-block;
+  width: 8px;
+  height: 9px;
+}
+
+#doughnut__chart-area {
+  position: relative;
+  z-index: 1;
+}
+
+#doughnut__legend {
+  position: absolute;
+
+  @media (max-width: 1280px) {
+    margin-top: 40px;
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+    position: absolute;
+  }
+}

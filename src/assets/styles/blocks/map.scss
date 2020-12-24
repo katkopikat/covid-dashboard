@@ -6,22 +6,9 @@
 $border-radius: 1rem;
 
 .icon-marker {
-  display: flex;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 0.7em;
-  font-weight: bold;
-  // background-color: red;
+  display: block;
   border-radius: 100%;
   box-shadow: 0 2px 5px rgba(black, 0.9);
-
-  &:hover {
-    .icon-marker-tooltip {
-      display: block;
-    }
-  }
 }
 
 .icon-marker--deaths,
@@ -68,7 +55,6 @@ $border-radius: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  // border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
 
@@ -115,7 +101,7 @@ $border-radius: 1rem;
   outline: none;
   border: none;
   border-left: 1px solid rgb(64, 64, 64);
-  border-right: 1px solid rgb(64, 64, 64);
+  border-top: 1px solid rgb(64, 64, 64);
   border-bottom: 1px solid rgb(64, 64, 64);
 
   & .fas {
@@ -124,7 +110,7 @@ $border-radius: 1rem;
   }
 
   &:nth-of-type(1) {
-    border-top: 1px solid rgb(64, 64, 64);
+    border-right: 1px solid rgb(64, 64, 64);
   }
 
   &:disabled {
@@ -249,7 +235,6 @@ input[type='radio'].visually-hidden {
   }
 
   & .settings__map {
-    // @include mapElement;
     z-index: 1000;
   }
 }
@@ -270,3 +255,30 @@ input[type='radio'].visually-hidden {
   width: 200px;
   height: 200px;
 }
+
+.fly-to-marker {
+  width: 3em;
+  height: 3em;
+  display: flex;
+  background-color: $die-color;
+  opacity: 0.5;
+  border-radius: 100%;
+  box-shadow: 0 2px 5px rgba(black, 0.9);
+  animation: fade 1s infinite alternate;
+}
+
+@keyframes fade {
+  from { 
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  to { 
+    opacity: 0;
+  }
+}
+
+// .fly-to-marker--blinking {
+//   animation: fade 600ms infinite alternate;
+// }
