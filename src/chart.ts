@@ -43,17 +43,10 @@ const labels = {
   12: false,
 };
 
-export interface ResponseEbywii {
-  date?: number;
-  cases?: any
-  deaths?: any
-  recovered?: any
-}
-
 export default class Chart {
   private mapService: any;
   private root: HTMLElement;
-  private dataSet: ResponseEbywii;
+  private dataSet: any;
   private chartElement: HTMLElement;
   private chart: any;
   private readonly raiseEvent;
@@ -61,7 +54,7 @@ export default class Chart {
   private countriesDataSet: ICovidData;
   private population: number;
   private currentDataSet: object;
-  private lastDaysData: ResponseEbywii;
+  private lastDaysData: any;
   private lastChart: any;
   private lastData: any;
   private typeOfChart: string;
@@ -265,7 +258,7 @@ export default class Chart {
         options: {
           tooltips: {
             callbacks: {
-              title: () => new Date(this.dataSet.date),
+              title: () => `Date: ${new Date(this.dataSet.date).toLocaleString()}`,
             },
           },
           responsive: true,
@@ -275,7 +268,7 @@ export default class Chart {
           scales: {
             xAxes: [{
               ticks: {
-                userCallback: () => new Date(this.dataSet.date).toLocaleString('default', { month: 'long' }),
+                userCallback: () => new Date(this.dataSet.date).toLocaleString('EN-en', { month: 'long' }),
               },
             }],
           },
