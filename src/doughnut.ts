@@ -43,6 +43,8 @@ export default class Doughnut implements IUpdate {
       } else {
         this.renderForCountry();
       }
+    } else {
+      this.render(this.globalData);
     }
   }
 
@@ -82,8 +84,8 @@ export default class Doughnut implements IUpdate {
     let chartData: number[];
     if (item) {
       chartData = this.dataSettings.lastDay
-        ? [item.todayDeaths, item.todayCases, item.todayRecovered]
-        : [item.deaths, item.cases, item.recovered];
+        ? [item.todayCases, item.todayRecovered, item.todayDeaths]
+        : [item.cases, item.recovered, item.deaths];
 
       if (this.dataSettings.per100k) {
         chartData = chartData
@@ -94,8 +96,8 @@ export default class Doughnut implements IUpdate {
     }
 
     const chartLegend: string[] = this.dataSettings.lastDay
-      ? [DataKey.todayDeaths, DataKey.todayCases, DataKey.todayRecovered]
-      : [DataKey.deaths, DataKey.cases, DataKey.recovered];
+      ? [DataKey.todayCases, DataKey.todayRecovered, DataKey.todayDeaths]
+      : [DataKey.cases, DataKey.recovered, DataKey.deaths];
 
     const config = {
       type: 'doughnut',
@@ -104,9 +106,9 @@ export default class Doughnut implements IUpdate {
           {
             data: chartData,
             backgroundColor: [
-              '#AA213A',
               '#1d6dec',
               '#3BCC92',
+              '#AA213A',
             ],
             label: 'Dataset 1',
             borderColor: 'transparent',
