@@ -15,6 +15,7 @@ import {
 import geoData from './common/data/countries.geo.json';
 import {
   convertDataToRelative,
+  focusTemplate,
   getCountryStyle,
   getDataForHeatMap,
   getGeoJsonData,
@@ -444,14 +445,13 @@ export default class Map implements IUpdate {
 
   private addPoint(countryCoords: number[]) {
     const html = `
-    <span class="fly-to-marker"></span>
+    <div class="fly-marker__wrapper">${focusTemplate}</div>
   `;
     this.pointToCurrentFly = Leaflet.marker(countryCoords, {
       icon: Leaflet.divIcon({
-        className: 'icon',
+        className: 'fly-icon',
         html,
       }),
-      riseOnHover: true,
     });
 
     this.pointToCurrentFly.addTo(this.mapElement);

@@ -6,6 +6,9 @@
 $border-radius: 1rem;
 
 .icon-marker {
+  position: absolute;
+  left: 50%;
+  right: 50%;
   display: block;
   border-radius: 100%;
   box-shadow: 0 2px 5px rgba(black, 0.9);
@@ -256,29 +259,17 @@ input[type='radio'].visually-hidden {
   height: 200px;
 }
 
-.fly-to-marker {
+.fly-icon {
+  z-index: 900 !important;
+}
+
+.fly-marker__wrapper {
   width: 3em;
   height: 3em;
-  display: flex;
-  background-color: $die-color;
-  opacity: 0.5;
-  border-radius: 100%;
-  box-shadow: 0 2px 5px rgba(black, 0.9);
-  animation: fade 1s infinite alternate;
+  fill: #fff;
+  position: absolute;
+  left: 50%;
+  left: 50%;
+  margin-left: -1.5em;
+  margin-top: -1.5em;
 }
-
-@keyframes fade {
-  from { 
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  to { 
-    opacity: 0;
-  }
-}
-
-// .fly-to-marker--blinking {
-//   animation: fade 600ms infinite alternate;
-// }
