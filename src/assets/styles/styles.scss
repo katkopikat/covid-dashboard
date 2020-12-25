@@ -42,6 +42,7 @@ body {
   margin: 0 auto;
 }
 
+
 .wrapper--main {
   // display: flex;
   // align-items: center;
@@ -52,10 +53,14 @@ body {
   height: 566px;
 }
 
+// .main__wrapper{
+//   height: calc(100vh - 160px);;
+//   }
+
 .header {
   height: 75px;
   padding: 1.5rem 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 
 }
 
@@ -146,6 +151,11 @@ body {
 .settings__chart>.btn__settings {
   margin-left: 30px;
   margin-top: 15px;
+}
+
+.chart > .heading__section{
+  margin-top: -1.5rem;
+  margin-bottom: 1rem;
 }
 
 .fullscreen {
@@ -518,6 +528,67 @@ input[type="radio"]:checked+.rdo {
 
 @media (max-width: 1280px) {
   .wrapper__width {
+    max-width: 1012px;
+  }
+  .wrapper--main {
+    flex-direction: column;
+    height: 590px;
+  }
+  .content__block {
+    margin: 0.3rem;
+  }
+  .countries,
+  .settings__countries{
+    height: 580px;
+  }
+  .map{
+    order: 2;
+    width: 395px;
+    height: 580px;
+  }
+  .wrapper_dashboard{
+    order: 3;
+    width: 375px;
+  }
+  .dashboard, .piechart{
+    height: 255px;
+    width: 200px;
+  }
+  .dashboard, .piechart{
+    height: 255px;
+    width: 170px;
+  }
+  .dashboard__number{
+    font-size: 1.4rem;
+  }
+  .settings__dashboard > .btn__settings{
+    margin-left: 80px;
+  }
+
+  .settings__dashboard{
+    height: 255px;
+    width: 178px;
+  }
+  .chart{
+    order:4;
+    height: 303px;
+    width: 352px;
+  }
+  .settings__chart{
+    height: 305px;
+    width: 368px;
+  }
+  #doughnut__chart-area{
+    width: 130px;
+    height: 130px;
+  }
+  #doughnut__legend {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .wrapper__width {
     max-width: 768px;
   }
 
@@ -551,6 +622,7 @@ input[type="radio"]:checked+.rdo {
     width: 525px;
     flex-basis: auto;
     flex-direction: row;
+    order: 2;
   }
 
   .dashboard {
@@ -581,6 +653,10 @@ input[type="radio"]:checked+.rdo {
     order: 1;
   }
 
+  .chart {
+    order: 3;
+  }
+
   .map {
     order: 4;
   }
@@ -589,7 +665,6 @@ input[type="radio"]:checked+.rdo {
   .settings__map {
     height: 620px;
     width: 690px;
-    order: 3;
     margin-bottom: 3rem;
   }
 
@@ -629,6 +704,11 @@ input[type="radio"]:checked+.rdo {
   .wrapper__fullscreen {
     height: calc(100vh - 170px);
   }
+}
+
+.set_fs{
+  height: calc(100vh - 160px);
+  width: 100vw;
 }
 
 @media (max-width: 768px) {

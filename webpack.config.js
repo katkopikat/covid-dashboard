@@ -107,7 +107,15 @@ module.exports = {
       },
       {
         test: /\.(ttf|woff|woff2|eot|ico)$/,
-        use: 'file-loader',
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/fonts/',
+            },
+          },
+        ],
       },
       {
         test: /\.(mp3|wav)$/,
