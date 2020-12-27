@@ -209,12 +209,12 @@ const getTooltipTemplate = (item: ICovidData, countryName: string, currentKey: D
         </div>`;
   } else if (!item) {
     template = `
-        <div>
-        <header class="map-tooltip__header"/>
-            <h3 class="map-tooltip__title">${countryName}</h3>
+      <div>
+          <header class="map-tooltip__header"/>
+              <h3 class="map-tooltip__title">${countryName}</h3>
           </header>
           <p class="map-tooltip__description">${currentKey}: <b>-- -- --</b></p>
-        </div>`;
+      </div>`;
   }
   return template;
 };
